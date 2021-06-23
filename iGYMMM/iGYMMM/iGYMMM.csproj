@@ -217,6 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="iGYMMM.sql" />
+    <Resource Include="Images\light-blue-bg2.jpg" />
+    <Resource Include="Images\light-blue-bg1.jpg" />
+    <Resource Include="Images\light-blue-bg.jpg" />
     <Resource Include="Images\2.256x256 transparent.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -23,7 +23,10 @@
                  Title="iGYMMM"
                  Height="768"
                  Width="1024">
+    <Window.Background>
+        <ImageBrush ImageSource="Images/light-blue-bg1.jpg" />
+    </Window.Background>
     <Grid>
-
+        
     </Grid>
 </mah:MetroWindow>
