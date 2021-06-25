@@ -24,7 +24,7 @@
                  Height="768"
                  Width="1024">
     <Window.Background>
-        <ImageBrush ImageSource="Images/light-blue-bg1.jpg" />
+        <ImageBrush ImageSource="Images/light-blue-bg9.jpg" />
     </Window.Background>
     <Grid>
         
