@@ -13,6 +13,8 @@ namespace iGYMMM1
 
         public int GymId { get; set; }
 
+        public int TrnTmId { get; set; }
+
         [Required]
         [StringLength(200)]
         public string TmGrpName { get; set; }
@@ -20,6 +22,10 @@ namespace iGYMMM1
         [Required]
         [StringLength(500)]
         public string TmGrpDescr { get; set; }
+
+        public int FavIntrId { get; set; }
+
+        public bool MustFavIntrId { get; set; }
 
         [StringLength(100)]
         public string Status { get; set; }
@@ -31,5 +37,20 @@ namespace iGYMMM1
         public int ChangedBy { get; set; }
 
         public long ChangedAt { get; set; }
+
+
+
+        [NotMapped]
+        public Instructor Instructor { get; set; }
+
+        [NotMapped]
+        public List<Client> LClients { get; set; }
+
+
+        public TeamGroup()
+        {
+            LClients = new List<Client>();
+            Instructor = new Instructor();
+        }
     }
 }

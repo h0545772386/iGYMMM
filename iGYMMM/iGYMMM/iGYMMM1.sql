@@ -216,14 +216,18 @@ create  index i1 on [TrainingTeams] ( [GymId] )
 CREATE TABLE [dbo].[TeamGroups](
 	[TmGrpId] [int] IDENTITY(10000,1) NOT NULL PRIMARY KEY,
 	[GymId] [int] NOT NULL DEFAULT 0,
+	[TrnTmId] [int] NOT NULL DEFAULT 0,
 	[TmGrpName] [nvarchar](200) NOT NULL,
 	[TmGrpDescr] [nvarchar](500) NOT NULL,
+	[FavIntrId] [int] NOT NULL DEFAULT 0,       -- מאמן מועדף
+	[MustFavIntrId] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף
     [Status] [nvarchar](100) NULL,
 	[CreatedBy] [int] NOT NULL,
 	[CreatedAt] [bigint] NOT NULL,
 	[ChangedBy] [int] NOT NULL,
 	[ChangedAt] [bigint] NOT NULL)
 create  index i1 on [TeamGroups] ( [GymId] )
+create  index i2 on [TeamGroups] ( [TrnTmId] )
 
 	-- link with clients table via [TmGrpId] at table clients
 CREATE TABLE [dbo].[ClntGroups](
@@ -244,7 +248,8 @@ CREATE TABLE [dbo].[Packages](
     [PkgId] [int] IDENTITY(100000,1) NOT NULL PRIMARY KEY,
 	[PkgName] [nvarchar](200) NOT NULL,
 	[PkgType] [nvarchar](200) NOT NULL,
-	[GymId] [int] NOT NULL DEFAULT 0,	
+	[GymId] [int] NOT NULL DEFAULT 0,
+	[TrnTmId] [int] NOT NULL DEFAULT 0,
 	[PkDateStart] [int] NOT NULL DEFAULT 0,  -- YYYYMMDD  
 	[PkDateStart1] [int] NOT NULL DEFAULT 0,  -- YYYYMMDD  
 	[PkDateEnd] [int] NOT NULL DEFAULT 0,    -- YYYYMMDD  
@@ -260,7 +265,8 @@ CREATE TABLE [dbo].[Packages](
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
 	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
 create  index i1 on [Packages] ( [GymId] )
-create  index i2 on [Packages] ( [PkDateStart] )
+create  index i2 on [Packages] ( [TrnTmId] )
+create  index i3 on [Packages] ( [PkDateStart] )
 
 CREATE TABLE [dbo].[TrnTmPackages](
 	[TrnTmPkgId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -293,7 +299,7 @@ CREATE TABLE [dbo].[PkgRequrmnts](
 create  index i1 on [PkgRequrmnts] ( [PkgId] )
 create  index i3 on [PkgRequrmnts] ( [GymId] )
 
-CREATE TABLE [dbo].[PackagePymnts](
+CREATE TABLE [dbo].[PkgPayments](
     [PkgPymntId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
     [PkgId] [int] NOT NULL DEFAULT 0,
 	[GymId] [int] NOT NULL DEFAULT 0,
@@ -306,9 +312,9 @@ CREATE TABLE [dbo].[PackagePymnts](
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
 	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
-create  index i1 on [PackagePymnts] ( [PkgId] )
-create  index i2 on [PackagePymnts] ( [GymId] )
-create  index i3 on [PackagePymnts] ( [ClntId] )
+create  index i1 on [PkgPayments] ( [PkgId] )
+create  index i2 on [PkgPayments] ( [GymId] )
+create  index i3 on [PkgPayments] ( [ClntId] )
 
 CREATE TABLE [dbo].[DiaryTeams](
     [DryTmId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,

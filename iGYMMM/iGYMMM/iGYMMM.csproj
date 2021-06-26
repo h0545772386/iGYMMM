@@ -206,7 +206,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="iGYMMM.bak" />
+    <None Include="iGYMMM.pptx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -219,6 +219,7 @@
   <ItemGroup>
     <Content Include="iGYMMM1.sql" />
     <Content Include="iGYMMM.sql" />
+    <Resource Include="Images\bg1.jpeg" />
     <Resource Include="Images\light-blue-bg10.jpg" />
     <Resource Include="Images\light-blue-bg9.jpg" />
     <Resource Include="Images\light-blue-bg4.png" />

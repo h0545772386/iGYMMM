@@ -10,6 +10,12 @@ namespace iGYMMM1
     {
         static void Main(string[] args)
         {
+
+            using (var db =new Model1())
+            {
+                var a = db.Gyms.ToList();
+            }
+           
         }
     }
 }

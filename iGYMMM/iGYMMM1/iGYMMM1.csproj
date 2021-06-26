@@ -73,7 +73,7 @@
     <Compile Include="Log.cs" />
     <Compile Include="Model1.cs" />
     <Compile Include="Package.cs" />
-    <Compile Include="PackagePymnt.cs" />
+    <Compile Include="PkgPayment.cs" />
     <Compile Include="PkgRequrmnt.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

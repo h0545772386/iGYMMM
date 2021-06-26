@@ -24,8 +24,8 @@ namespace iGYMMM1
         public virtual DbSet<InstrsAttendance> InstrsAttendances { get; set; }
         public virtual DbSet<Instructor> Instructors { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
-        public virtual DbSet<PackagePymnt> PackagePymnts { get; set; }
         public virtual DbSet<Package> Packages { get; set; }
+        public virtual DbSet<PkgPayment> PkgPayments { get; set; }
         public virtual DbSet<PkgRequrmnt> PkgRequrmnts { get; set; }
         public virtual DbSet<Reminder> Reminders { get; set; }
         public virtual DbSet<TeamGroup> TeamGroups { get; set; }
@@ -163,16 +163,16 @@ namespace iGYMMM1
                 .Property(e => e.PerTrip2)
                 .HasPrecision(10, 2);
 
-            modelBuilder.Entity<PackagePymnt>()
-                .Property(e => e.TotalFee)
-                .HasPrecision(10, 2);
-
             modelBuilder.Entity<Package>()
                 .Property(e => e.TotalFee1)
                 .HasPrecision(10, 2);
 
             modelBuilder.Entity<Package>()
                 .Property(e => e.TotalFee2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<PkgPayment>()
+                .Property(e => e.TotalFee)
                 .HasPrecision(10, 2);
 
             modelBuilder.Entity<User>()

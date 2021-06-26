@@ -6,7 +6,7 @@ namespace iGYMMM1
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class PackagePymnt
+    public partial class PkgPayment
     {
         [Key]
         public int PkgPymntId { get; set; }
