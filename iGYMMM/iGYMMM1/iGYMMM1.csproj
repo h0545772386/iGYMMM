@@ -63,6 +63,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClntGroup.cs" />
     <Compile Include="Communication.cs" />
+    <Compile Include="TrainingDate.cs" />
     <Compile Include="Description.cs" />
     <Compile Include="DiaryClnt.cs" />
     <Compile Include="DiaryInstr.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reminder.cs" />
     <Compile Include="TeamGroup.cs" />
+    <Compile Include="TrainingAdapter.cs" />
     <Compile Include="TrainingTeam.cs" />
     <Compile Include="TrnTmPackage.cs" />
     <Compile Include="User.cs" />

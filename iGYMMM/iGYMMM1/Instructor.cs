@@ -78,5 +78,15 @@ namespace iGYMMM1
         public int ChangedBy { get; set; }
 
         public long ChangedAt { get; set; }
+
+
+        [NotMapped]
+        public List<InstrsAttendance> LInstrsAttendances { get; set; }
+
+        public Instructor()
+        {
+            LInstrsAttendances = new List<InstrsAttendance>();
+        }
+        
     }
 }

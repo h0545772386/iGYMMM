@@ -322,7 +322,8 @@ CREATE TABLE [dbo].[DiaryTeams](
 	[TrnTmId] [int] NOT NULL DEFAULT 0,
 	[PkgId] [int] NOT NULL DEFAULT 0,
 	[PkgReqId] [int] NOT NULL DEFAULT 0,
-	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD 
+	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD
+	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours
 	[PkReqDOW] [nvarchar](200) NULL, -- day of week
 	[PkReqDayTime] [nvarchar](200) NULL, -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
 	[PkReqHour1] [int] NOT NULL DEFAULT 0,
@@ -346,7 +347,9 @@ CREATE TABLE [dbo].[DiaryInstrs](
     [DryTmId] [int] NOT NULL DEFAULT 0,
 	[PkgId] [int] NOT NULL DEFAULT 0,
 	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD 
+	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours
 	[PkReqHour2] [int] NOT NULL DEFAULT 0,
+	[InstrIdPlanned] [int] NOT NULL DEFAULT 0, 
 	[InstrId] [int] NOT NULL DEFAULT 0, 
 	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
 	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
@@ -372,7 +375,8 @@ CREATE TABLE [dbo].[DiaryClnts](
 	[GymId] [int] NOT NULL DEFAULT 0,
     [DryTmId] [int] NOT NULL DEFAULT 0,
 	[PkgId] [int] NOT NULL DEFAULT 0,
-	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD 
+	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD
+	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours
 	[PkReqHour2] [int] NOT NULL DEFAULT 0,
 	[DryInstrId] [int] NOT NULL DEFAULT 0,
 	[InstrId] [int] NOT NULL DEFAULT 0, 

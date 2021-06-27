@@ -17,11 +17,15 @@ namespace iGYMMM1
 
         public int PkgId { get; set; }
 
-        public int TrnDate { get; set; }
+        public int TrnDate { get; set; }     // actual training date for team  YYYYMMDD
+
+        public int TrnHour { get; set; }   // actual training hour for team  0 - 23
 
         public int PkReqHour2 { get; set; }
 
-        public int InstrId { get; set; }
+        public int InstrIdPlanned { get; set; }
+
+        public int InstrId { get; set; }        
 
         public decimal PerHour1 { get; set; }
 
