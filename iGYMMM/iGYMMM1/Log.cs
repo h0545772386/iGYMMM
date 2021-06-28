@@ -29,6 +29,9 @@ namespace iGYMMM1
 
         public int LgDate2 { get; set; }
 
+        [StringLength(200)]
+        public string LgColor { get; set; }
+
         [StringLength(100)]
         public string Status { get; set; }
 

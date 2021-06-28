@@ -27,6 +27,9 @@ namespace iGYMMM1
 
         public bool MustFavIntrId { get; set; }
 
+        [StringLength(200)]
+        public string TmGrpColor { get; set; }
+
         [StringLength(100)]
         public string Status { get; set; }
 
@@ -37,20 +40,5 @@ namespace iGYMMM1
         public int ChangedBy { get; set; }
 
         public long ChangedAt { get; set; }
-
-
-
-        [NotMapped]
-        public Instructor Instructor { get; set; }
-
-        [NotMapped]
-        public List<Client> LClients { get; set; }
-
-
-        public TeamGroup()
-        {
-            LClients = new List<Client>();
-            Instructor = new Instructor();
-        }
     }
 }

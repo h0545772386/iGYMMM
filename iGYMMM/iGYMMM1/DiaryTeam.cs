@@ -19,9 +19,9 @@ namespace iGYMMM1
 
         public int PkgReqId { get; set; }
 
-        public int TrnDate { get; set; }   // actual training date for team  YYYYMMDD
+        public int TrnDate { get; set; }
 
-        public int TrnHour { get; set; }   // actual training hour for team  0 - 23
+        public int TrnHour { get; set; }
 
         [StringLength(200)]
         public string PkReqDOW { get; set; }
@@ -34,6 +34,21 @@ namespace iGYMMM1
         public int PkReqHour2 { get; set; }
 
         public int PkReqTrnTime { get; set; }
+
+        [StringLength(200)]
+        public string ActualTrnDOW { get; set; }
+
+        [StringLength(200)]
+        public string ActualTrnDayTime { get; set; }
+
+        public int ActualTrnHour1 { get; set; }
+
+        public int ActualTrnHour2 { get; set; }
+
+        public int ActualTrnTrnTime { get; set; }
+
+        [StringLength(200)]
+        public string ColorView { get; set; }
 
         [Required]
         [StringLength(100)]

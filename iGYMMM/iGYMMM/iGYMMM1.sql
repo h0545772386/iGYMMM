@@ -35,13 +35,8 @@ CREATE TABLE [dbo].[Clients](
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[FullName] [nvarchar](200) NULL,
 	[AliaseName] [nvarchar](200) NULL,
-	[UName] [nvarchar](50) NOT NULL,
-	[UPass] [binary](100) NOT NULL,
-	[UCode] [binary](100) NOT NULL,
-	[UResetPass] [binary](100) NOT NULL,
-	[U_GUID] [binary](100) NOT NULL,
-	[OAuthLvl] [binary](100) NOT NULL,
-	[TmGrpId] [int] NOT NULL DEFAULT 0, -- link to group
+	[TrnTmId] [int] NOT NULL DEFAULT 0, -- link to training team
+	[TmGrpId] [int] NOT NULL DEFAULT 0, -- link to team group
 	[FavIntrId] [int] NOT NULL DEFAULT 0,   -- מאמן מועדף
 	[MustFavIntrId] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף
 	[ClntIDN] [nvarchar](100) NULL,
@@ -49,9 +44,16 @@ CREATE TABLE [dbo].[Clients](
 	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
 	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
 	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[ClntColor] [nvarchar](200) NULL,
 	[CWorthy] [nvarchar](100) NOT NULL,
 	[CRate] [nvarchar](100) NOT NULL,
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL,	
+	[UName] [nvarchar](50) NOT NULL,
+	[UPass] [binary](100) NOT NULL,
+	[UCode] [binary](100) NOT NULL,
+	[UResetPass] [binary](100) NOT NULL,
+	[U_GUID] [binary](100) NOT NULL,
+	[OAuthLvl] [binary](100) NOT NULL,
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -64,21 +66,22 @@ CREATE TABLE [dbo].[Instructors](
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[FullName] [nvarchar](200) NULL,
 	[AliaseName] [nvarchar](200) NULL,
-	[UName] [nvarchar](50) NOT NULL,
-	[UPass] [binary](100) NOT NULL,
-	[UCode] [binary](100) NOT NULL,
-	[UResetPass] [binary](100) NOT NULL,
-	[U_GUID] [binary](100) NOT NULL,
-	[OAuthLvl] [binary](100) NOT NULL,	
 	[InstrIDN] [nvarchar](100) NULL,
 	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
 	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
 	[PerWaitHour] [decimal](10, 2) NOT NULL DEFAULT 0,
 	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
 	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[InstrColor] [nvarchar](200) NULL,
 	[CWorthy] [nvarchar](100) NOT NULL,
 	[CRate] [nvarchar](100) NOT NULL,
 	[Status] [nvarchar](100) NOT NULL,
+	[UName] [nvarchar](50) NOT NULL,
+	[UPass] [binary](100) NOT NULL,
+	[UCode] [binary](100) NOT NULL,
+	[UResetPass] [binary](100) NOT NULL,
+	[U_GUID] [binary](100) NOT NULL,
+	[OAuthLvl] [binary](100) NOT NULL,	
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -92,13 +95,16 @@ CREATE TABLE [dbo].[InstrsAttendance](
 	[IAShiftDate] [int] NOT NULL DEFAULT 0,      -- YYYYMMDD  
 	[IAShiftStart] [bigint] NOT NULL DEFAULT 0,  -- YYYYMMDDHHMM hour that shift start   
 	[IAShiftEnd] [bigint] NOT NULL DEFAULT 0,    -- YYYYMMDDHHMM hour that shift start 
+	[IAShiftPrcntg] [int] NOT NULL DEFAULT 0,      -- shift persentage 
+	[IAShiftCredit] [decimal](10, 2) NOT NULL DEFAULT 0,      -- bounos  
+	[IAShiftCharge] [decimal](10, 2) NOT NULL DEFAULT 0,      -- chargs
 	[Status] [nvarchar](100) NOT NULL,
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
 	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
 create  index i1 on [InstrsAttendance] ( [GymId] )
-create  index i1 on [InstrsAttendance] ( [InstrId] )
+create  index i2 on [InstrsAttendance] ( [InstrId] )
 
 CREATE TABLE [dbo].[Addresses](
 	[AdrsId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -167,6 +173,7 @@ CREATE TABLE [dbo].[Logs](
 	[LgType] [nvarchar](100) NULL,
 	[LgText] [nvarchar](600) NULL,
 	[LgDate2] [int] NOT NULL DEFAULT 0,
+	[LgColor] [nvarchar](200) NULL,
 	[Status] [nvarchar](100) NULL,
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
@@ -189,6 +196,7 @@ CREATE TABLE [dbo].[Reminders](
 	[RecorsivTime] [nvarchar](100) NULL,
 	[RecorsivTime1] [nvarchar](100) NULL,
 	[Frequence] [nvarchar](100) NULL,
+	[RemColor] [nvarchar](200) NULL,
 	[Status] [nvarchar](100) NULL,
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
@@ -205,7 +213,8 @@ CREATE TABLE [dbo].[TrainingTeams](
 	[TrnTmName] [nvarchar](200) NOT NULL,
 	[TrnTmDescr] [nvarchar](500) NOT NULL,
 	[InstrIdCount] [int] NOT NULL DEFAULT 0,   -- מספר מאמנים בקבוצה
-	[OnePayer] [bit] NOT NULL DEFAULT 0,	
+	[OnePayer] [bit] NOT NULL DEFAULT 0,
+	[TrnTmColor] [nvarchar](200) NULL,	
     [Status] [nvarchar](100) NULL,
 	[CreatedBy] [int] NOT NULL,
 	[CreatedAt] [bigint] NOT NULL,
@@ -221,6 +230,7 @@ CREATE TABLE [dbo].[TeamGroups](
 	[TmGrpDescr] [nvarchar](500) NOT NULL,
 	[FavIntrId] [int] NOT NULL DEFAULT 0,       -- מאמן מועדף
 	[MustFavIntrId] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף
+	[TmGrpColor] [nvarchar](200) NULL,
     [Status] [nvarchar](100) NULL,
 	[CreatedBy] [int] NOT NULL,
 	[CreatedAt] [bigint] NOT NULL,
@@ -230,7 +240,7 @@ create  index i1 on [TeamGroups] ( [GymId] )
 create  index i2 on [TeamGroups] ( [TrnTmId] )
 
 	-- link with clients table via [TmGrpId] at table clients
-CREATE TABLE [dbo].[ClntGroups](
+CREATE TABLE [dbo].[TeamGroupsClients](
 	[ClntGrpId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[ClntId] [int] NOT NULL DEFAULT 0,
@@ -240,9 +250,9 @@ CREATE TABLE [dbo].[ClntGroups](
 	[CreatedAt] [bigint] NOT NULL,
 	[ChangedBy] [int] NOT NULL,
 	[ChangedAt] [bigint] NOT NULL)
-create  index i1 on [ClntGroups] ( [GymId] )
-create  index i2 on [ClntGroups] ( [ClntId] )
-create  index i3 on [ClntGroups] ( [TmGrpId] )
+create  index i1 on [TeamGroupsClients] ( [GymId] )
+create  index i2 on [TeamGroupsClients] ( [ClntId] )
+create  index i3 on [TeamGroupsClients] ( [TmGrpId] )
 
 CREATE TABLE [dbo].[Packages](
     [PkgId] [int] IDENTITY(100000,1) NOT NULL PRIMARY KEY,
@@ -258,7 +268,9 @@ CREATE TABLE [dbo].[Packages](
 	[PkTrnAmountWeek] [int] NOT NULL DEFAULT 0,   -- number of trainings / treatment in week	
 	[TotalFee1] [decimal](10, 2) NOT NULL,
 	[TotalFee2] [decimal](10, 2) NOT NULL,
+	[TotalFee3] [decimal](10, 2) NOT NULL,
 	[AllGrpPymntDone] [bit] NOT NULL DEFAULT 0,
+	[PkgColor] [nvarchar](200) NULL,
 	[Status] [nvarchar](100) NOT NULL,
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
@@ -328,7 +340,13 @@ CREATE TABLE [dbo].[DiaryTeams](
 	[PkReqDayTime] [nvarchar](200) NULL, -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
 	[PkReqHour1] [int] NOT NULL DEFAULT 0,
 	[PkReqHour2] [int] NOT NULL DEFAULT 0,
-	[PkReqTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train
+	[PkReqTrnTime] [int] NOT NULL DEFAULT 1,        -- one hour for train
+	[ActualTrnDOW] [nvarchar](200) NULL,            -- day of week
+	[ActualTrnDayTime] [nvarchar](200) NULL,        -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
+	[ActualTrnHour1] [int] NOT NULL DEFAULT 0,
+	[ActualTrnHour2] [int] NOT NULL DEFAULT 0,
+	[ActualTrnTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train	
+	[ColorView] [nvarchar](200) NULL,     --- alert view
 	[Status] [nvarchar](100) NOT NULL,
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
@@ -347,10 +365,19 @@ CREATE TABLE [dbo].[DiaryInstrs](
     [DryTmId] [int] NOT NULL DEFAULT 0,
 	[PkgId] [int] NOT NULL DEFAULT 0,
 	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD 
-	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours
+	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0 - 23 hours
+	[PkReqDOW] [nvarchar](200) NULL, -- day of week
+	[PkReqDayTime] [nvarchar](200) NULL, -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
+	[PkReqHour1] [int] NOT NULL DEFAULT 0,
 	[PkReqHour2] [int] NOT NULL DEFAULT 0,
-	[InstrIdPlanned] [int] NOT NULL DEFAULT 0, 
-	[InstrId] [int] NOT NULL DEFAULT 0, 
+	[PkReqTrnTime] [int] NOT NULL DEFAULT 1,        -- one hour for train
+	[ActualTrnDOW] [nvarchar](200) NULL,            -- day of week
+	[ActualTrnDayTime] [nvarchar](200) NULL,        -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
+	[ActualTrnHour1] [int] NOT NULL DEFAULT 0,
+	[ActualTrnHour2] [int] NOT NULL DEFAULT 0,
+	[ActualTrnTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train
+	[PlannedInstrId] [int] NOT NULL DEFAULT 0, 
+	[ActualInstrId] [int] NOT NULL DEFAULT 0, 
 	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
 	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
 	[PerWaitHour] [decimal](10, 2) NOT NULL DEFAULT 0,
@@ -368,18 +395,29 @@ create  index i1 on [DiaryInstrs] ( [GymId] )
 create  index i2 on [DiaryInstrs] ( [DryTmId] )
 create  index i3 on [DiaryInstrs] ( [PkgId] )
 create  index i4 on [DiaryInstrs] ( [TrnDate] )
-create  index i5 on [DiaryInstrs] ( [InstrId] )
+create  index i5 on [DiaryInstrs] ( [PlannedInstrId] )
+create  index i6 on [DiaryInstrs] ( [ActualInstrId] )
 
 CREATE TABLE [dbo].[DiaryClnts](
     [DryClntId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[GymId] [int] NOT NULL DEFAULT 0,
     [DryTmId] [int] NOT NULL DEFAULT 0,
+	[DryInstrId] [int] NOT NULL DEFAULT 0,
 	[PkgId] [int] NOT NULL DEFAULT 0,
 	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD
 	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours
+	[PkReqDOW] [nvarchar](200) NULL, -- day of week
+	[PkReqDayTime] [nvarchar](200) NULL, -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
+	[PkReqHour1] [int] NOT NULL DEFAULT 0,
 	[PkReqHour2] [int] NOT NULL DEFAULT 0,
-	[DryInstrId] [int] NOT NULL DEFAULT 0,
-	[InstrId] [int] NOT NULL DEFAULT 0, 
+	[PkReqTrnTime] [int] NOT NULL DEFAULT 1,        -- one hour for train
+	[ActualTrnDOW] [nvarchar](200) NULL,            -- day of week
+	[ActualTrnDayTime] [nvarchar](200) NULL,        -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
+	[ActualTrnHour1] [int] NOT NULL DEFAULT 0,
+	[ActualTrnHour2] [int] NOT NULL DEFAULT 0,
+	[ActualTrnTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train
+	[PlannedInstrId] [int] NOT NULL DEFAULT 0, 
+	[ActualInstrId] [int] NOT NULL DEFAULT 0, 
 	[ClntId] [int] NOT NULL DEFAULT 0,
 	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
 	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
@@ -397,5 +435,6 @@ create  index i1 on [DiaryClnts] ( [GymId] )
 create  index i2 on [DiaryClnts] ( [DryTmId] )
 create  index i3 on [DiaryClnts] ( [PkgId] )
 create  index i4 on [DiaryClnts] ( [TrnDate] )
-create  index i5 on [DiaryClnts] ( [InstrId] )
-create  index i6 on [DiaryClnts] ( [ClntId] )
+create  index i5 on [DiaryClnts] ( [PlannedInstrId] )
+create  index i6 on [DiaryClnts] ( [ActualInstrId] )
+create  index i7 on [DiaryClnts] ( [ClntId] )

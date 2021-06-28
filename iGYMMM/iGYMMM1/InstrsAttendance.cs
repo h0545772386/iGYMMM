@@ -22,6 +22,12 @@ namespace iGYMMM1
 
         public long IAShiftEnd { get; set; }
 
+        public int IAShiftPrcntg { get; set; }
+
+        public decimal IAShiftCredit { get; set; }
+
+        public decimal IAShiftCharge { get; set; }
+
         [Required]
         [StringLength(100)]
         public string Status { get; set; }

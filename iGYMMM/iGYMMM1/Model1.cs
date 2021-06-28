@@ -14,7 +14,6 @@ namespace iGYMMM1
 
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
-        public virtual DbSet<ClntGroup> ClntGroups { get; set; }
         public virtual DbSet<Communication> Communications { get; set; }
         public virtual DbSet<Description> Descriptions { get; set; }
         public virtual DbSet<DiaryClnt> DiaryClnts { get; set; }
@@ -29,6 +28,7 @@ namespace iGYMMM1
         public virtual DbSet<PkgRequrmnt> PkgRequrmnts { get; set; }
         public virtual DbSet<Reminder> Reminders { get; set; }
         public virtual DbSet<TeamGroup> TeamGroups { get; set; }
+        public virtual DbSet<TeamGroupsClient> TeamGroupsClients { get; set; }
         public virtual DbSet<TrainingTeam> TrainingTeams { get; set; }
         public virtual DbSet<TrnTmPackage> TrnTmPackages { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -36,6 +36,22 @@ namespace iGYMMM1
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Client>()
+                .Property(e => e.PerHour1)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Client>()
+                .Property(e => e.PerHour2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Client>()
+                .Property(e => e.PerTrip1)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Client>()
+                .Property(e => e.PerTrip2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Client>()
                 .Property(e => e.UPass)
                 .IsFixedLength();
 
@@ -54,22 +70,6 @@ namespace iGYMMM1
             modelBuilder.Entity<Client>()
                 .Property(e => e.OAuthLvl)
                 .IsFixedLength();
-
-            modelBuilder.Entity<Client>()
-                .Property(e => e.PerHour1)
-                .HasPrecision(10, 2);
-
-            modelBuilder.Entity<Client>()
-                .Property(e => e.PerHour2)
-                .HasPrecision(10, 2);
-
-            modelBuilder.Entity<Client>()
-                .Property(e => e.PerTrip1)
-                .HasPrecision(10, 2);
-
-            modelBuilder.Entity<Client>()
-                .Property(e => e.PerTrip2)
-                .HasPrecision(10, 2);
 
             modelBuilder.Entity<DiaryClnt>()
                 .Property(e => e.PerHour1)
@@ -123,25 +123,13 @@ namespace iGYMMM1
                 .Property(e => e.CreditTot)
                 .HasPrecision(10, 2);
 
-            modelBuilder.Entity<Instructor>()
-                .Property(e => e.UPass)
-                .IsFixedLength();
+            modelBuilder.Entity<InstrsAttendance>()
+                .Property(e => e.IAShiftCredit)
+                .HasPrecision(10, 2);
 
-            modelBuilder.Entity<Instructor>()
-                .Property(e => e.UCode)
-                .IsFixedLength();
-
-            modelBuilder.Entity<Instructor>()
-                .Property(e => e.UResetPass)
-                .IsFixedLength();
-
-            modelBuilder.Entity<Instructor>()
-                .Property(e => e.U_GUID)
-                .IsFixedLength();
-
-            modelBuilder.Entity<Instructor>()
-                .Property(e => e.OAuthLvl)
-                .IsFixedLength();
+            modelBuilder.Entity<InstrsAttendance>()
+                .Property(e => e.IAShiftCharge)
+                .HasPrecision(10, 2);
 
             modelBuilder.Entity<Instructor>()
                 .Property(e => e.PerHour1)
@@ -162,6 +150,26 @@ namespace iGYMMM1
             modelBuilder.Entity<Instructor>()
                 .Property(e => e.PerTrip2)
                 .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Instructor>()
+                .Property(e => e.UPass)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Instructor>()
+                .Property(e => e.UCode)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Instructor>()
+                .Property(e => e.UResetPass)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Instructor>()
+                .Property(e => e.U_GUID)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Instructor>()
+                .Property(e => e.OAuthLvl)
+                .IsFixedLength();
 
             modelBuilder.Entity<Package>()
                 .Property(e => e.TotalFee1)
@@ -169,6 +177,10 @@ namespace iGYMMM1
 
             modelBuilder.Entity<Package>()
                 .Property(e => e.TotalFee2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Package>()
+                .Property(e => e.TotalFee3)
                 .HasPrecision(10, 2);
 
             modelBuilder.Entity<PkgPayment>()

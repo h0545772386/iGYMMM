@@ -38,6 +38,9 @@ namespace iGYMMM1
         [StringLength(100)]
         public string Frequence { get; set; }
 
+        [StringLength(200)]
+        public string RemColor { get; set; }
+
         [StringLength(100)]
         public string Status { get; set; }
 
