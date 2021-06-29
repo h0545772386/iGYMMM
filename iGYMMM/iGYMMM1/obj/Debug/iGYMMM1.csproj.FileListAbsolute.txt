@@ -9,3 +9,4 @@ D:\DEV\iGYMMM\iGYMMM\iGYMMM1\obj\Debug\iGYMMM1.csproj.CoreCompileInputs.cache
 D:\DEV\iGYMMM\iGYMMM\iGYMMM1\obj\Debug\iGYMMM1.csproj.CopyComplete
 D:\DEV\iGYMMM\iGYMMM\iGYMMM1\obj\Debug\iGYMMM1.exe
 D:\DEV\iGYMMM\iGYMMM\iGYMMM1\obj\Debug\iGYMMM1.pdb
+D:\DEV\iGYMMM\iGYMMM\iGYMMM1\obj\Debug\iGYMMM1.csproj.AssemblyReference.cache

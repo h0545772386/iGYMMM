@@ -57,5 +57,34 @@ namespace iGYMMM1
         public int ChangedBy { get; set; }
 
         public long ChangedAt { get; set; }
+
+        [NotMapped]
+        public List<PkgPayment> LPayments { get; set; }
+
+        [NotMapped]
+        public List<PkgRequrmnt> LRequriments { get; set; }
+
+        [NotMapped]
+        public List<DiaryClnt> LDiaryClients { get; set; }
+
+        [NotMapped]
+        public List<DiaryInstr> LDiaryInstructors { get; set; }
+
+        [NotMapped]
+        public List<DiaryTeam> DiaryTeams { get; set; }
+
+        [NotMapped]
+        public List<TrnTmPackage> TeamPackages { get; set; }
+
+
+        public Package()
+        {
+            LPayments = new List<PkgPayment>();
+            LRequriments = new List<PkgRequrmnt>();
+            DiaryTeams = new List<DiaryTeam>();
+            LDiaryInstructors = new List<DiaryInstr>();
+            LDiaryClients = new List<DiaryClnt>();
+            TeamPackages = new List<TrnTmPackage>();
+        }
     }
 }

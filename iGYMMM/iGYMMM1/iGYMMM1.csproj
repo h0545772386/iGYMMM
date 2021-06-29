@@ -79,6 +79,8 @@
     <Compile Include="Reminder.cs" />
     <Compile Include="TeamGroup.cs" />
     <Compile Include="TeamGroupsClient.cs" />
+    <Compile Include="AssigningAdapter.cs" />
+    <Compile Include="AssignmentsDate.cs" />
     <Compile Include="TrainingTeam.cs" />
     <Compile Include="TrnTmPackage.cs" />
     <Compile Include="User.cs" />

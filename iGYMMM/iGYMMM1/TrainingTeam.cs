@@ -38,5 +38,23 @@ namespace iGYMMM1
         public int ChangedBy { get; set; }
 
         public long ChangedAt { get; set; }
+
+
+
+
+
+
+        [NotMapped]
+        public List<TeamGroup> LTeamGroups { get; set; }
+
+        [NotMapped]
+        public Package Package { get; set; }
+
+
+        public TrainingTeam()
+        {
+            Package = new Package();
+            LTeamGroups = new List<TeamGroup>();
+        }
     }
 }
