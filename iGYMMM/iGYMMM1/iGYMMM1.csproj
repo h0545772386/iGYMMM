@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="CEED.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Communication.cs" />
     <Compile Include="Description.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="TrainingTeam.cs" />
     <Compile Include="TrnTmPackage.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="UTILS.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="algorithm.docx" />
