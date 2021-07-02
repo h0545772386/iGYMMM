@@ -67,6 +67,7 @@
     <Compile Include="DiaryClnt.cs" />
     <Compile Include="DiaryInstr.cs" />
     <Compile Include="DiaryTeam.cs" />
+    <Compile Include="EnumsClass.cs" />
     <Compile Include="Gym.cs" />
     <Compile Include="InstrsAttendance.cs" />
     <Compile Include="Instructor.cs" />

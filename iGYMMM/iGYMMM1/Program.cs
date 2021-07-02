@@ -11,8 +11,8 @@ namespace iGYMMM1
     {
         static void Main(string[] args)
         {
-            CEED.ceed();
-
+            //CEED.ceed();
+            AssigningAdapter.CreateTraining(20210704, 20210710, 100114);
         }
 
     }

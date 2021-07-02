@@ -230,6 +230,10 @@ CREATE TABLE [dbo].[TeamGroups](
 	[TmGrpDescr] [nvarchar](500) NOT NULL,
 	[FavIntrId] [int] NOT NULL DEFAULT 0,       -- מאמן מועדף
 	[MustFavIntrId] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף
+	[TotalGrpFee1] [decimal](10, 2) NOT NULL,
+	[TotalGrpFee2] [decimal](10, 2) NOT NULL,
+	[TotalGrpFee3] [decimal](10, 2) NOT NULL,
+	[AllGrpPymntDone] [bit] NOT NULL DEFAULT 0,
 	[TmGrpColor] [nvarchar](200) NULL,
     [Status] [nvarchar](100) NULL,
 	[CreatedBy] [int] NOT NULL,

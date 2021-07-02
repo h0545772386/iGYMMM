@@ -27,6 +27,14 @@ namespace iGYMMM1
 
         public bool MustFavIntrId { get; set; }
 
+        public decimal TotaGrplFee1 { get; set; }
+
+        public decimal TotalGrpFee2 { get; set; }
+
+        public decimal TotalGrpFee3 { get; set; }
+
+        public bool AllGrpPymntDone { get; set; }
+
         [StringLength(200)]
         public string TmGrpColor { get; set; }
 
