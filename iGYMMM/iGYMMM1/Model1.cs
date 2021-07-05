@@ -32,6 +32,8 @@ namespace iGYMMM1
         public virtual DbSet<TrainingTeam> TrainingTeams { get; set; }
         public virtual DbSet<TrnTmPackage> TrnTmPackages { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<DiaryHeader> DiaryHeaders { get; set; }
+        public virtual DbSet<DiaryItem> DiaryItems { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -206,6 +208,58 @@ namespace iGYMMM1
             modelBuilder.Entity<User>()
                 .Property(e => e.OAuthLvl)
                 .IsFixedLength();
+            modelBuilder.Entity<DiaryHeader>()
+               .Property(e => e.PerHour1)
+               .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryHeader>()
+                .Property(e => e.PerHour2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryHeader>()
+                .Property(e => e.PerWaitHour)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryHeader>()
+                .Property(e => e.PerTrip1)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryHeader>()
+                .Property(e => e.PerTrip2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryHeader>()
+                .Property(e => e.ChargeTot)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryHeader>()
+                .Property(e => e.CreditTot)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryItem>()
+                .Property(e => e.PerHour1)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryItem>()
+                .Property(e => e.PerHour2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryItem>()
+                .Property(e => e.PerTrip1)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryItem>()
+                .Property(e => e.PerTrip2)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryItem>()
+                .Property(e => e.ChargeTot)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<DiaryItem>()
+                .Property(e => e.CreditTot)
+                .HasPrecision(10, 2);
+
         }
     }
 }

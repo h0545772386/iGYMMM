@@ -27,7 +27,7 @@ namespace iGYMMM1
 
         public bool MustFavIntrId { get; set; }
 
-        public decimal TotaGrplFee1 { get; set; }
+        public decimal TotalGrpFee1 { get; set; }
 
         public decimal TotalGrpFee2 { get; set; }
 

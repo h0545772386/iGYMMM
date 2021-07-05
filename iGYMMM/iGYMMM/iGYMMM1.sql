@@ -442,3 +442,75 @@ create  index i4 on [DiaryClnts] ( [TrnDate] )
 create  index i5 on [DiaryClnts] ( [PlannedInstrId] )
 create  index i6 on [DiaryClnts] ( [ActualInstrId] )
 create  index i7 on [DiaryClnts] ( [ClntId] )
+
+
+
+
+
+/*   new   Diary tables */ 
+
+
+CREATE TABLE [dbo].[DiaryHeaders](
+    [DryHdrId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[GymId] [int] NOT NULL DEFAULT 0,
+	[TrnTmId] [int] NOT NULL DEFAULT 0,
+	[TmGrpId] [int] NOT NULL DEFAULT 0,
+	[PkgId] [int] NOT NULL DEFAULT 0,
+	[PkgReqId] [int] NOT NULL DEFAULT 0,
+	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD
+	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours
+	[PkReqDOW] [nvarchar](200) NULL, -- day of week
+	[PkReqDayTime] [nvarchar](200) NULL, -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
+	[PkReqHour1] [int] NOT NULL DEFAULT 0,
+	[PkReqHour2] [int] NOT NULL DEFAULT 0,
+	[PkReqTrnTime] [int] NOT NULL DEFAULT 1,        -- one hour for train
+	[ActualTrnDOW] [nvarchar](200) NULL,            -- day of week
+	[ActualTrnDayTime] [nvarchar](200) NULL,        -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
+	[ActualTrnHour1] [int] NOT NULL DEFAULT 0,
+	[ActualTrnHour2] [int] NOT NULL DEFAULT 0,
+	[ActualTrnTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train
+	[PlannedInstrId] [int] NOT NULL DEFAULT 0, 
+	[ActualInstrId] [int] NOT NULL DEFAULT 0, 
+	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerWaitHour] [decimal](10, 2) NOT NULL DEFAULT 0,
+	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[ChargeTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
+	[CreditTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן	
+	[ColorView] [nvarchar](200) NULL,     --- alert view
+	[TrStatus] [nvarchar](100) NOT NULL,  -- scheduled Done Finished
+	[Status] [nvarchar](100) NOT NULL,
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
+create  index i1 on [DiaryHeaders] ( [GymId] )
+create  index i2 on [DiaryHeaders] ( [TrnTmId] )
+create  index i3 on [DiaryHeaders] ( [PkgId] )
+create  index i4 on [DiaryHeaders] ( [PkgReqId] )
+create  index i5 on [DiaryHeaders] ( [TrnDate] )
+
+
+CREATE TABLE [dbo].[DiaryItems](
+    [DryItmId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY, 
+	[DryHdrId] [int] NOT NULL DEFAULT 0,
+	[GymId] [int] NOT NULL DEFAULT 0,    
+	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD
+	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours	
+	[ClntId] [int] NOT NULL DEFAULT 0,
+	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+    [ChargeTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
+	[CreditTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן
+	[TrStatus] [nvarchar](100) NOT NULL,  -- scheduled Done Finished
+	[Status] [nvarchar](100) NOT NULL,
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
+create  index i1 on [DiaryItems] ( [DryHdrId] )
+create  index i2 on [DiaryItems] ( [GymId] )
+create  index i3 on [DiaryItems] ( [TrnDate] )

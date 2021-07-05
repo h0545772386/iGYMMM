@@ -60,12 +60,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="AppGlobals.cs" />
+    <Compile Include="AssigningDataStructure.cs" />
+    <Compile Include="AssigningLog.cs" />
     <Compile Include="CEED.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Communication.cs" />
     <Compile Include="Description.cs" />
     <Compile Include="DiaryClnt.cs" />
+    <Compile Include="DiaryHeader.cs" />
     <Compile Include="DiaryInstr.cs" />
+    <Compile Include="DiaryItem.cs" />
     <Compile Include="DiaryTeam.cs" />
     <Compile Include="EnumsClass.cs" />
     <Compile Include="Gym.cs" />

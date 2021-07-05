@@ -16,9 +16,9 @@ namespace iGYMMM1
                 //ceed_Instructor(db);
                 //ceed_InstrsAttendance(db);
                 //ceed_TrainingTeam(db);
-                // ceed_TeamGroup(db);
+                //ceed_TeamGroup(db);
                 //ceed_Clients(db);
-                // ceed_Packages(db);
+                //ceed_Packages(db);
                 //ceed_PkgRequrmnt(db);
             }
         }
@@ -38,6 +38,7 @@ namespace iGYMMM1
             db.Gyms.Add(gym);
             db.SaveChanges();
         }
+
         private static void ceed_Instructor(Model1 db)
         {
             for (int i = 0; i < 6; i++)
@@ -141,21 +142,24 @@ namespace iGYMMM1
         private static void ceed_TeamGroup(Model1 db)
         {
             var r = new Random();
+            var r1 = new Random();
             var TrainingTeams = db.TrainingTeams.ToList();
+            var Instructors = db.Instructors.ToList();
             foreach (var item in TrainingTeams)
             {
-                int grps = r.Next(1, 8);
+                int grps = r.Next(1, Instructors.Count() - 1);
                 DateTime d = DateTime.Now;
                 for (int i = 1; i <= grps; i++)
                 {
+                    int FAVinstrId = r.Next(0, Instructors.Count() - 1);
                     item.LTeamGroups.Add(new TeamGroup()
                     {
                         GymId = 1000,
                         TrnTmId = item.TrnTmId,
                         TmGrpName = (" צוות מס " + i.ToString()).Trim(),
                         TmGrpDescr = (" צוות מס " + i.ToString()).Trim(),
-                        FavIntrId = 0,
-                        MustFavIntrId = false,
+                        FavIntrId = Instructors[FAVinstrId].InstrId,
+                        MustFavIntrId = (TrainingTeams.IndexOf(item) + i) % 6 == 0 ? true : false,
                         Status = "Active",
                         CreatedBy = 0,
                         CreatedAt = 0,
@@ -171,7 +175,7 @@ namespace iGYMMM1
 
         private static void ceed_Clients(Model1 db)
         {
-            var r = new Random();
+            //var r = new Random();
             var r1 = new Random();
             var Instructors = db.Instructors.ToList();
             var TeamGroups = db.TeamGroups.ToList();
@@ -181,7 +185,7 @@ namespace iGYMMM1
                 int ClntInGrp = r1.Next(1, 5);
                 for (int grp1 = 1; grp1 <= ClntInGrp; grp1++)
                 {
-                    int FAVinstrId = r.Next(0, Instructors.Count() - 1);
+                    //int FAVinstrId = r.Next(0, Instructors.Count() - 1);
                     byte[] ByteArray = new byte[1];
                     ByteArray[0] = (byte)i;
                     Client clnt = new Client()
@@ -192,8 +196,8 @@ namespace iGYMMM1
                         AliaseName = (" לקוח " + (i + grp1).ToString()).Trim(),
                         TrnTmId = 0,
                         TmGrpId = 0,
-                        FavIntrId = Instructors[FAVinstrId].InstrId,
-                        MustFavIntrId = i % 5 == 0 ? true : false,
+                        //FavIntrId = Instructors[FAVinstrId].InstrId,
+                        //MustFavIntrId = i % 5 == 0 ? true : false,
                         ClntIDN = "000000000",
                         PerHour1 = 0,
                         PerHour2 = 0,
@@ -214,12 +218,12 @@ namespace iGYMMM1
                         ChangedBy = 0,
                         ChangedAt = 0
                     };
+                    if (j >= TeamGroups.Count())
+                        break;
                     clnt.TrnTmId = TeamGroups[j].TrnTmId;
                     clnt.TmGrpId = TeamGroups[j].TmGrpId;
                     db.Clients.Add(clnt);
-                    db.SaveChanges();
-                    if (j >= TeamGroups.Count())
-                        break;
+                    db.SaveChanges();                    
                 }
                 j++;
             }
@@ -263,6 +267,7 @@ namespace iGYMMM1
                     case 7:
                         pkg.PkgType = "2TrnsInWeek";
                         pkg.IsPeriodFixed = true;
+                        pkg.PkTrnAmountWeek = 2;
                         pkg.TotalFee1 = (decimal)1100.0;
                         break;
                     case 2:
@@ -270,6 +275,7 @@ namespace iGYMMM1
                     case 5:
                         pkg.PkgType = "3TrnsInWeek";
                         pkg.IsPeriodFixed = true;
+                        pkg.PkTrnAmountWeek = 3;
                         pkg.TotalFee1 = (decimal)1650.0;
                         break;
                     case 6:
@@ -277,6 +283,7 @@ namespace iGYMMM1
                     case 9:
                         pkg.PkgType = "4TrnsInWeek";
                         pkg.IsPeriodFixed = true;
+                        pkg.PkTrnAmountWeek = 4;
                         pkg.TotalFee1 = (decimal)2350.0;
                         break;
                     case 10:
@@ -296,17 +303,17 @@ namespace iGYMMM1
 
         private static void ceed_PkgRequrmnt(Model1 db)
         {
+            var r = new Random();
             PkgRequrmnt pkg_requ = null;
-            LEnumsClass DOWs = new LEnumsClass();
-            var days = DOWs.Enums.Where(tt => tt.Enum == "DOW").ToList();
-            var day_time = DOWs.Enums.Where(tt => tt.Enum == "DayTime").ToList();
-            int PkReqHour1 = 0;
-            int days_indx = 0;
-            int day_time_indx = 0;
-            int loop = 0;
-            var Packages = db.Packages.ToList();
+            var days = LEnumsClass.Enums.Where(tt => tt.Enum == "DOW").ToList();
+            var day_time = LEnumsClass.Enums.Where(tt => tt.Enum == "DayTime").ToList();
+
+            var Packages = db.Packages.ToList(); //.Where(X => X.PkgId <= 100667).ToList();    //.Where(x => x.PkgId == 100663).ToList();
             foreach (var item in Packages)
             {
+                int loop = 0;
+                int days_indx = 0;
+                int PkReqHour1 = 6;
                 switch (item.PkgType)
                 {
                     case "2TrnsInWeek":
@@ -323,13 +330,14 @@ namespace iGYMMM1
                 }
                 for (int i = 0; i < loop; i++)
                 {
+                    PkReqHour1 = r.Next(6, 23);
                     pkg_requ = new PkgRequrmnt()
                     {
                         PkgId = item.PkgId,
                         GymId = 1000,
-                        PkReqDOW = days[days_indx += 2].EnumEng,
-                        PkReqDayTime = day_time[day_time_indx].EnumEng,
-                        PkReqHour1 = day_time[day_time_indx].EnumValue1 + PkReqHour1,
+                        PkReqDOW = days[days_indx].EnumEng,
+                        PkReqDayTime = "",
+                        PkReqHour1 = PkReqHour1,
                         PkReqTrnTime = 1,
                         Status = "Active",
                         CreatedBy = 0,
@@ -337,24 +345,19 @@ namespace iGYMMM1
                         ChangedBy = 0,
                         ChangedAt = 0
                     };
-                    PkReqHour1++;
-                    if (days_indx > 4)
+                    days_indx += 2;
+                    if (days_indx > 6)
                         days_indx = 0;
-
-                    if (PkReqHour1 > 5)
-                        PkReqHour1 = 0;
+                    var d_t = day_time.FirstOrDefault(x => x.EnumValue1 <= PkReqHour1 && x.EnumValue2 >= PkReqHour1);
+                    if (d_t != null)
+                        pkg_requ.PkReqDayTime = d_t.EnumEng;
+                    PkReqHour1 += 3;
+                    if (PkReqHour1 >= 23)
+                        PkReqHour1 = 6;
+                    db.PkgRequrmnts.Add(pkg_requ);
+                    db.SaveChanges();
                 }
-                db.PkgRequrmnts.Add(pkg_requ);
-                db.SaveChanges();
-                day_time_indx++;
-                if (day_time_indx > 2)
-                    day_time_indx = 0;
             }
-        }
-
-        private static void Do(Package item, int TrnsInWeekv)
-        {
-            throw new NotImplementedException();
         }
     }
 }

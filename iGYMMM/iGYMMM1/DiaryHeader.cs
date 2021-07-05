@@ -6,14 +6,16 @@ namespace iGYMMM1
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class DiaryTeam
+    public partial class DiaryHeader
     {
         [Key]
-        public int DryTmId { get; set; }
+        public int DryHdrId { get; set; }
 
         public int GymId { get; set; }
 
         public int TrnTmId { get; set; }
+
+        public int TmGrpId { get; set; }
 
         public int PkgId { get; set; }
 
@@ -47,8 +49,30 @@ namespace iGYMMM1
 
         public int ActualTrnTrnTime { get; set; }
 
+        public int PlannedInstrId { get; set; }
+
+        public int ActualInstrId { get; set; }
+
+        public decimal PerHour1 { get; set; }
+
+        public decimal PerHour2 { get; set; }
+
+        public decimal PerWaitHour { get; set; }
+
+        public decimal PerTrip1 { get; set; }
+
+        public decimal PerTrip2 { get; set; }
+
+        public decimal ChargeTot { get; set; }
+
+        public decimal CreditTot { get; set; }
+
         [StringLength(200)]
         public string ColorView { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string TrStatus { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -65,11 +89,12 @@ namespace iGYMMM1
 
 
         [NotMapped]
-        public List<DiaryInstr> LDiaryInstrs { get; set; }
+        public List<DiaryItem> LDiaryItems { get; set; }
 
-        public DiaryTeam()
+        public DiaryHeader()
         {
-            LDiaryInstrs = new List<DiaryInstr>();
+            LDiaryItems = new List<DiaryItem>();
         }
+
     }
 }

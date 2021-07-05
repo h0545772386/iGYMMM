@@ -38,6 +38,19 @@ namespace iGYMMM1
             return Convert.ToInt32(Date2String(date));
         }
 
+        /// <summary>
+        /// DateTime date
+        /// </summary>
+        /// <param name="int_date"></param>
+        /// <returns>DateTime</returns>
+        public static DateTime Int2Date(this int int_date)
+        {
+            int year = int_date / 10000;
+            int month = (int_date / 100) % 100;
+            int day = int_date % 100;
+            return new DateTime(year, month, day);
+        }
+
 
         /// <summary>
         /// DateTime date
@@ -47,6 +60,24 @@ namespace iGYMMM1
         public static long Date2Long(this DateTime date)
         {
             return long.Parse(Date2String(date, "YYYYMMDDHHMM"));
+        }
+
+        /// <summary>
+        /// DateTime date
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>DateTime</returns>
+        public static DateTime Long2Date(this long long_date)
+        {
+            string long_s = long_date.ToString();   // YYYYMMDDHHMM
+
+            int year = Convert.ToInt32(long_s.Substring(0, 4));
+            int month = Convert.ToInt32(long_s.Substring(4, 2));
+            int day = Convert.ToInt32(long_s.Substring(6, 2));
+            int hour = Convert.ToInt32(long_s.Substring(8, 2));
+            int minute = Convert.ToInt32(long_s.Substring(10, 2));
+            return new DateTime(year, month, day, hour, minute, 0);
+
         }
     }
 }
