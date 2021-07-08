@@ -13,6 +13,7 @@ namespace iGYMMM1
             using (var db = new Model1())
             {
                 //ceed_Gym(db);
+                //ceed_GymsTimeTable(db);
                 //ceed_Instructor(db);
                 //ceed_InstrsAttendance(db);
                 //ceed_TrainingTeam(db);
@@ -37,6 +38,33 @@ namespace iGYMMM1
             };
             db.Gyms.Add(gym);
             db.SaveChanges();
+        }
+
+        private static void ceed_GymsTimeTable(Model1 db)
+        {
+            var DOWs = LEnumsClass.Enums.Where(x => x.Enum == "DOW").ToList().OrderBy(x => x.EnumId).ToList();
+            var gyms = db.Gyms.Where(tt => tt.Status == "Active").ToList();
+            foreach (var item in gyms)
+            {
+                foreach (var day_ in DOWs)
+                {
+                    GymsTimeTable gymtt = new GymsTimeTable()
+                    {
+                        GymTTId = 0,
+                        GymId = item.GymId,
+                        DOW = day_.EnumEng,
+                        OpenAt = 6,
+                        CloseAt = 23,
+                        Status = "Active",
+                        CreatedBy = 0,
+                        CreatedAt = 0,
+                        ChangedBy = 0,
+                        ChangedAt = 0
+                    };
+                    db.GymsTimeTables.Add(gymtt);
+                    db.SaveChanges();
+                }
+            }
         }
 
         private static void ceed_Instructor(Model1 db)
@@ -141,6 +169,8 @@ namespace iGYMMM1
 
         private static void ceed_TeamGroup(Model1 db)
         {
+            int FAVinstrId = 0;
+            List<int> Linst_indx = new List<int>();
             var r = new Random();
             var r1 = new Random();
             var TrainingTeams = db.TrainingTeams.ToList();
@@ -151,7 +181,12 @@ namespace iGYMMM1
                 DateTime d = DateTime.Now;
                 for (int i = 1; i <= grps; i++)
                 {
-                    int FAVinstrId = r.Next(0, Instructors.Count() - 1);
+                    do
+                    {
+                        FAVinstrId = r.Next(0, Instructors.Count() - 1);
+                    }
+                    while (Linst_indx.Contains(FAVinstrId));
+                    Linst_indx.Add(FAVinstrId);
                     item.LTeamGroups.Add(new TeamGroup()
                     {
                         GymId = 1000,
@@ -170,6 +205,7 @@ namespace iGYMMM1
                 }
                 db.TeamGroups.AddRange(item.LTeamGroups);
                 db.SaveChanges();
+                Linst_indx.Clear();
             }
         }
 
@@ -223,7 +259,7 @@ namespace iGYMMM1
                     clnt.TrnTmId = TeamGroups[j].TrnTmId;
                     clnt.TmGrpId = TeamGroups[j].TmGrpId;
                     db.Clients.Add(clnt);
-                    db.SaveChanges();                    
+                    db.SaveChanges();
                 }
                 j++;
             }

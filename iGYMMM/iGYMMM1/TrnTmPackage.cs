@@ -17,6 +17,7 @@ namespace iGYMMM1
 
         public int PkgId { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Status { get; set; }
 

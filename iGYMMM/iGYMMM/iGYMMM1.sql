@@ -4,8 +4,20 @@ GO
 CREATE TABLE [dbo].[Gyms](
 	[GymId] [int] IDENTITY(1000,1) NOT NULL PRIMARY KEY,
 	[GymName] [nvarchar](200) NOT NULL,	
-	[GymDescr] [nvarchar](500) NOT NULL,	
-    [Status] [nvarchar](100) NULL,
+	[GymDescr] [nvarchar](500) NOT NULL DEFAULT '',	
+    [Status] [nvarchar](100) NOT NULL DEFAULT '',
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
+
+CREATE TABLE [dbo].[GymsTimeTable](
+	[GymTTId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[GymId] [int] NOT NULL DEFAULT 0,
+	[DOW] [nvarchar](100) NOT NULL  DEFAULT '',
+	[OpenAt] [int] NOT NULL DEFAULT 0,	
+	[CloseAt] [int] NOT NULL DEFAULT 0,
+    [Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL,
 	[CreatedAt] [bigint] NOT NULL,
 	[ChangedBy] [int] NOT NULL,
@@ -15,45 +27,45 @@ CREATE TABLE [dbo].[Users](
 	[UId] [int] IDENTITY(1000,1) NOT NULL PRIMARY KEY,
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[UName] [nvarchar](50) NOT NULL,
-	[UPass] [binary](100) NOT NULL,
-	[UCode] [binary](100) NOT NULL,
-	[UResetPass] [binary](100) NOT NULL,
-	[U_GUID] [binary](100) NOT NULL,
-	[OAuthLvl] [binary](100) NOT NULL,	
+	[UPass] [binary](50) NOT NULL,
+	[UCode] [binary](50) NOT NULL,
+	[UResetPass] [binary](50) NOT NULL,
+	[U_GUID] [binary](50) NOT NULL,
+	[OAuthLvl] [binary](50) NOT NULL,	
 	[FullName] [nvarchar](200) NULL,
-	[Admin] [bit] NOT NULL,
-	[Status] [nvarchar](100) NULL,
-	[CreatedBy] [int] NOT NULL,
-	[CreatedAt] [bigint] NOT NULL,
-	[ChangedBy] [int] NOT NULL,
-	[ChangedAt] [bigint] NOT NULL)	
+	[Admin] [bit] NOT NULL  DEFAULT 0,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)	
 create  index i1 on [Users] ( [GymId] )
 
 CREATE TABLE [dbo].[Clients](
 	[ClntId] [int] NOT NULL IDENTITY(100000,1) PRIMARY KEY,	
-	[ClntNum] [nvarchar](200) NULL,
+	[ClntNum] [nvarchar](200) NOT NULL DEFAULT '',
 	[GymId] [int] NOT NULL DEFAULT 0,
-	[FullName] [nvarchar](200) NULL,
+	[FullName] [nvarchar](200) NOT NULL,
 	[AliaseName] [nvarchar](200) NULL,
 	[TrnTmId] [int] NOT NULL DEFAULT 0, -- link to training team
 	[TmGrpId] [int] NOT NULL DEFAULT 0, -- link to team group
 	[FavIntrId] [int] NOT NULL DEFAULT 0,   -- מאמן מועדף
 	[MustFavIntrId] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף
 	[ClntIDN] [nvarchar](100) NULL,
-	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerHour1] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerTrip1] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
 	[ClntColor] [nvarchar](200) NULL,
 	[CWorthy] [nvarchar](100) NOT NULL,
 	[CRate] [nvarchar](100) NOT NULL,
-	[Status] [nvarchar](100) NOT NULL,	
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',	
 	[UName] [nvarchar](50) NOT NULL,
-	[UPass] [binary](100) NOT NULL,
-	[UCode] [binary](100) NOT NULL,
-	[UResetPass] [binary](100) NOT NULL,
-	[U_GUID] [binary](100) NOT NULL,
-	[OAuthLvl] [binary](100) NOT NULL,
+	[UPass] [binary](50) NOT NULL,
+	[UCode] [binary](50) NOT NULL,
+	[UResetPass] [binary](50) NOT NULL,
+	[U_GUID] [binary](50) NOT NULL,
+	[OAuthLvl] [binary](50) NOT NULL,
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -62,26 +74,26 @@ create  index i1 on [Clients] ( [GymId] )
 
 CREATE TABLE [dbo].[Instructors](
 	[InstrId] [int] NOT NULL IDENTITY(100000,1) PRIMARY KEY,	
-	[InstrNum] [nvarchar](200) NULL,
+	[InstrNum] [nvarchar](200) NOT NULL DEFAULT '',
 	[GymId] [int] NOT NULL DEFAULT 0,
-	[FullName] [nvarchar](200) NULL,
+	[FullName] [nvarchar](200) NOT NULL,
 	[AliaseName] [nvarchar](200) NULL,
 	[InstrIDN] [nvarchar](100) NULL,
-	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerWaitHour] [decimal](10, 2) NOT NULL DEFAULT 0,
-	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerHour1] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerWaitHour] [decimal](12, 2) NOT NULL DEFAULT 0,
+	[PerTrip1] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
 	[InstrColor] [nvarchar](200) NULL,
 	[CWorthy] [nvarchar](100) NOT NULL,
 	[CRate] [nvarchar](100) NOT NULL,
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[UName] [nvarchar](50) NOT NULL,
-	[UPass] [binary](100) NOT NULL,
-	[UCode] [binary](100) NOT NULL,
-	[UResetPass] [binary](100) NOT NULL,
-	[U_GUID] [binary](100) NOT NULL,
-	[OAuthLvl] [binary](100) NOT NULL,	
+	[UPass] [binary](50) NOT NULL,
+	[UCode] [binary](50) NOT NULL,
+	[UResetPass] [binary](50) NOT NULL,
+	[U_GUID] [binary](50) NOT NULL,
+	[OAuthLvl] [binary](50) NOT NULL,	
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -96,9 +108,9 @@ CREATE TABLE [dbo].[InstrsAttendance](
 	[IAShiftStart] [bigint] NOT NULL DEFAULT 0,  -- YYYYMMDDHHMM hour that shift start   
 	[IAShiftEnd] [bigint] NOT NULL DEFAULT 0,    -- YYYYMMDDHHMM hour that shift start 
 	[IAShiftPrcntg] [int] NOT NULL DEFAULT 0,      -- shift persentage 
-	[IAShiftCredit] [decimal](10, 2) NOT NULL DEFAULT 0,      -- bounos  
-	[IAShiftCharge] [decimal](10, 2) NOT NULL DEFAULT 0,      -- chargs
-	[Status] [nvarchar](100) NOT NULL,
+	[IAShiftCredit] [decimal](12, 2) NOT NULL DEFAULT 0,      -- bounos  
+	[IAShiftCharge] [decimal](12, 2) NOT NULL DEFAULT 0,      -- chargs
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -119,7 +131,7 @@ CREATE TABLE [dbo].[Addresses](
 	[Address2] [nvarchar](100) NULL,
 	[Address3] [nvarchar](100) NULL,
 	[Address4] [nvarchar](100) NULL,
-	[Status] [nvarchar](100) NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -137,7 +149,7 @@ CREATE TABLE [dbo].[Communications](
 	[CommuName] [nvarchar](100) NULL,
 	[CommuType] [nvarchar](100) NULL,
 	[CommuValue] [nvarchar](200) NULL,
-	[Status] [nvarchar](100) NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -154,7 +166,7 @@ CREATE TABLE [dbo].[Descriptions](
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[DiscrTyp] [nvarchar](100) NULL,
 	[DiscrText] [nvarchar](800) NULL,
-	[Status] [nvarchar](100) NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -174,7 +186,7 @@ CREATE TABLE [dbo].[Logs](
 	[LgText] [nvarchar](600) NULL,
 	[LgDate2] [int] NOT NULL DEFAULT 0,
 	[LgColor] [nvarchar](200) NULL,
-	[Status] [nvarchar](100) NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -191,13 +203,13 @@ CREATE TABLE [dbo].[Reminders](
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[PopUpAt_YYYYMMDDHHMM] [bigint] NOT NULL DEFAULT 0,
 	[RemText] [nvarchar](300) NULL,
-	[IsRecorsive] [bit] NOT NULL,
+	[IsRecorsive] [bit] NOT NULL DEFAULT 0,
 	[RecorsivType] [nvarchar](100) NULL,
 	[RecorsivTime] [nvarchar](100) NULL,
 	[RecorsivTime1] [nvarchar](100) NULL,
 	[Frequence] [nvarchar](100) NULL,
 	[RemColor] [nvarchar](200) NULL,
-	[Status] [nvarchar](100) NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -216,11 +228,11 @@ CREATE TABLE [dbo].[TrainingTeams](
 	[OnePayer] [bit] NOT NULL DEFAULT 0,
 	[TrnTmColor] [nvarchar](200) NULL,
 	[MustFavIntr4Grp] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף לאחת הקבוצות
-    [Status] [nvarchar](100) NULL,
-	[CreatedBy] [int] NOT NULL,
-	[CreatedAt] [bigint] NOT NULL,
-	[ChangedBy] [int] NOT NULL,
-	[ChangedAt] [bigint] NOT NULL)
+    [Status] [nvarchar](100) NOT NULL DEFAULT '',
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
 create  index i1 on [TrainingTeams] ( [GymId] )
 
 CREATE TABLE [dbo].[TeamGroups](
@@ -231,16 +243,16 @@ CREATE TABLE [dbo].[TeamGroups](
 	[TmGrpDescr] [nvarchar](500) NOT NULL,
 	[FavIntrId] [int] NOT NULL DEFAULT 0,       -- מאמן מועדף
 	[MustFavIntrId] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף
-	[TotalGrpFee1] [decimal](10, 2) NOT NULL,
-	[TotalGrpFee2] [decimal](10, 2) NOT NULL,
-	[TotalGrpFee3] [decimal](10, 2) NOT NULL,
+	[TotalGrpFee1] [decimal](12, 2) NOT NULL DEFAULT 0,
+	[TotalGrpFee2] [decimal](12, 2) NOT NULL DEFAULT 0,
+	[TotalGrpFee3] [decimal](12, 2) NOT NULL DEFAULT 0,
 	[AllGrpPymntDone] [bit] NOT NULL DEFAULT 0,
 	[TmGrpColor] [nvarchar](200) NULL,
-    [Status] [nvarchar](100) NULL,
-	[CreatedBy] [int] NOT NULL,
-	[CreatedAt] [bigint] NOT NULL,
-	[ChangedBy] [int] NOT NULL,
-	[ChangedAt] [bigint] NOT NULL)
+    [Status] [nvarchar](100) NOT NULL DEFAULT '',
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
 create  index i1 on [TeamGroups] ( [GymId] )
 create  index i2 on [TeamGroups] ( [TrnTmId] )
 
@@ -250,11 +262,11 @@ CREATE TABLE [dbo].[TeamGroupsClients](
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[ClntId] [int] NOT NULL DEFAULT 0,
 	[TmGrpId] [int] NOT NULL DEFAULT 0,
-    [Status] [nvarchar](100) NULL,
-	[CreatedBy] [int] NOT NULL,
-	[CreatedAt] [bigint] NOT NULL,
-	[ChangedBy] [int] NOT NULL,
-	[ChangedAt] [bigint] NOT NULL)
+    [Status] [nvarchar](100) NOT NULL DEFAULT '',
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
 create  index i1 on [TeamGroupsClients] ( [GymId] )
 create  index i2 on [TeamGroupsClients] ( [ClntId] )
 create  index i3 on [TeamGroupsClients] ( [TmGrpId] )
@@ -271,12 +283,12 @@ CREATE TABLE [dbo].[Packages](
 	[IsPeriodFixed] [bit] NOT NULL DEFAULT 0,  -- לפי זמן
 	[PkTrnAmount] [int] NOT NULL DEFAULT 0,   -- number of trainings / treatment	Total
 	[PkTrnAmountWeek] [int] NOT NULL DEFAULT 0,   -- number of trainings / treatment in week	
-	[TotalFee1] [decimal](10, 2) NOT NULL,
-	[TotalFee2] [decimal](10, 2) NOT NULL,
-	[TotalFee3] [decimal](10, 2) NOT NULL,
+	[TotalFee1] [decimal](12, 2) NOT NULL DEFAULT 0,
+	[TotalFee2] [decimal](12, 2) NOT NULL DEFAULT 0,
+	[TotalFee3] [decimal](12, 2) NOT NULL DEFAULT 0,
 	[AllGrpPymntDone] [bit] NOT NULL DEFAULT 0,
 	[PkgColor] [nvarchar](200) NULL,
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -290,11 +302,11 @@ CREATE TABLE [dbo].[TrnTmPackages](
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[TrnTmId] [int] NOT NULL DEFAULT 0,
 	[PkgId] [int] NOT NULL DEFAULT 0,
-    [Status] [nvarchar](100) NULL,
-	[CreatedBy] [int] NOT NULL,
-	[CreatedAt] [bigint] NOT NULL,
-	[ChangedBy] [int] NOT NULL,
-	[ChangedAt] [bigint] NOT NULL)
+    [Status] [nvarchar](100) NOT NULL DEFAULT '',
+	[CreatedBy] [int] NOT NULL DEFAULT 0,
+	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
+	[ChangedBy] [int] NOT NULL DEFAULT 0,
+	[ChangedAt] [bigint] NOT NULL DEFAULT 0)
 create  index i1 on [TrnTmPackages] ( [GymId] )
 create  index i2 on [TrnTmPackages] ( [TrnTmId] )
 create  index i3 on [TrnTmPackages] ( [PkgId] )
@@ -308,7 +320,7 @@ CREATE TABLE [dbo].[PkgRequrmnts](
 	[PkReqDayTime] [nvarchar](200) NULL, -- [Morning (06-11)] [Afternoon (12-17)] [Eveinig (18-23)]
 	[PkReqHour1] [int] NOT NULL DEFAULT 0,
 	[PkReqTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train	
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -322,9 +334,9 @@ CREATE TABLE [dbo].[PkgPayments](
 	[GymId] [int] NOT NULL DEFAULT 0,
 	[ClntId] [int] NOT NULL DEFAULT 0,
 	[PkgPymntDate] [int] NOT NULL DEFAULT 0,  -- YYYYMMDD  
-	[TotalFee] [decimal](10, 2) NOT NULL,
+	[TotalFee] [decimal](12, 2) NOT NULL DEFAULT 0,
 	[PaymentDone] [bit] NOT NULL DEFAULT 0,
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -352,7 +364,7 @@ CREATE TABLE [dbo].[DiaryTeams](
 	[ActualTrnHour2] [int] NOT NULL DEFAULT 0,
 	[ActualTrnTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train	
 	[ColorView] [nvarchar](200) NULL,     --- alert view
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -383,15 +395,15 @@ CREATE TABLE [dbo].[DiaryInstrs](
 	[ActualTrnTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train
 	[PlannedInstrId] [int] NOT NULL DEFAULT 0, 
 	[ActualInstrId] [int] NOT NULL DEFAULT 0, 
-	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerWaitHour] [decimal](10, 2) NOT NULL DEFAULT 0,
-	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[ChargeTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
-	[CreditTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן
+	[PerHour1] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerWaitHour] [decimal](12, 2) NOT NULL DEFAULT 0,
+	[PerTrip1] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[ChargeTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
+	[CreditTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן
 	[TrStatus] [nvarchar](100) NOT NULL,  -- scheduled Done Finished
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -424,14 +436,14 @@ CREATE TABLE [dbo].[DiaryClnts](
 	[PlannedInstrId] [int] NOT NULL DEFAULT 0, 
 	[ActualInstrId] [int] NOT NULL DEFAULT 0, 
 	[ClntId] [int] NOT NULL DEFAULT 0,
-	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-    [ChargeTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
-	[CreditTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן
+	[PerHour1] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerTrip1] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+    [ChargeTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
+	[CreditTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן
 	[TrStatus] [nvarchar](100) NOT NULL,  -- scheduled Done Finished
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -472,16 +484,16 @@ CREATE TABLE [dbo].[DiaryHeaders](
 	[ActualTrnTrnTime] [int] NOT NULL DEFAULT 1,    -- one hour for train
 	[PlannedInstrId] [int] NOT NULL DEFAULT 0, 
 	[ActualInstrId] [int] NOT NULL DEFAULT 0, 
-	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerWaitHour] [decimal](10, 2) NOT NULL DEFAULT 0,
-	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[ChargeTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
-	[CreditTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן	
+	[PerHour1] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerWaitHour] [decimal](12, 2) NOT NULL DEFAULT 0,
+	[PerTrip1] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[ChargeTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
+	[CreditTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן	
 	[ColorView] [nvarchar](200) NULL,     --- alert view
 	[TrStatus] [nvarchar](100) NOT NULL,  -- scheduled Done Finished
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,
@@ -504,14 +516,14 @@ CREATE TABLE [dbo].[DiaryItems](
 	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD
 	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours	
 	[ClntId] [int] NOT NULL DEFAULT 0,
-	[PerHour1] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerHour2] [decimal](10, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
-	[PerTrip1] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-	[PerTrip2] [decimal](10, 2) NOT NULL DEFAULT 0,      -- נסיעות
-    [ChargeTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
-	[CreditTot] [decimal](10, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן
+	[PerHour1] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerHour2] [decimal](12, 2) NOT NULL DEFAULT 0,    -- מחיר לשעה
+	[PerTrip1] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+	[PerTrip2] [decimal](12, 2) NOT NULL DEFAULT 0,      -- נסיעות
+    [ChargeTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- חיוב למאמן
+	[CreditTot] [decimal](12, 2) NOT NULL DEFAULT 0,      -- בונוס למאמן
 	[TrStatus] [nvarchar](100) NOT NULL,  -- scheduled Done Finished
-	[Status] [nvarchar](100) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL DEFAULT '',
 	[CreatedBy] [int] NOT NULL DEFAULT 0,
 	[CreatedAt] [bigint] NOT NULL DEFAULT 0,
 	[ChangedBy] [int] NOT NULL DEFAULT 0,

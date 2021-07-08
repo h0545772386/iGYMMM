@@ -58,6 +58,9 @@ namespace iGYMMM1
 
         public long ChangedAt { get; set; }
 
+
+
+
         [NotMapped]
         public List<PkgPayment> LPayments { get; set; }
 

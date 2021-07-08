@@ -43,6 +43,7 @@ namespace iGYMMM1
         [StringLength(100)]
         public string Address4 { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Status { get; set; }
 

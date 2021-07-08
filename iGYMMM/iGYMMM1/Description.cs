@@ -25,6 +25,7 @@ namespace iGYMMM1
         [StringLength(800)]
         public string DiscrText { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Status { get; set; }
 

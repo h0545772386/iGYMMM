@@ -78,15 +78,5 @@ namespace iGYMMM1
         public int ChangedBy { get; set; }
 
         public long ChangedAt { get; set; }
-
-
-        [NotMapped]
-        public List<DiaryClnt> LDiaryClnts { get; set; }
-
-        public DiaryInstr()
-        {
-            LDiaryClnts = new List<DiaryClnt>();
-        }
-
     }
 }

@@ -38,6 +38,7 @@ namespace iGYMMM1
         [StringLength(200)]
         public string TmGrpColor { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Status { get; set; }
 
@@ -48,8 +49,6 @@ namespace iGYMMM1
         public int ChangedBy { get; set; }
 
         public long ChangedAt { get; set; }
-
-
 
 
         [NotMapped]

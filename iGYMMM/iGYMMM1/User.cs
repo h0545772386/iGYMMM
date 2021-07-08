@@ -18,23 +18,23 @@ namespace iGYMMM1
         public string UName { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] UPass { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] UCode { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] UResetPass { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] U_GUID { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] OAuthLvl { get; set; }
 
         [StringLength(200)]
@@ -42,6 +42,7 @@ namespace iGYMMM1
 
         public bool Admin { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Status { get; set; }
 

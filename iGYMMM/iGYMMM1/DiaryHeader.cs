@@ -95,6 +95,5 @@ namespace iGYMMM1
         {
             LDiaryItems = new List<DiaryItem>();
         }
-
     }
 }

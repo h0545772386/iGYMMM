@@ -11,11 +11,13 @@ namespace iGYMMM1
         [Key]
         public int InstrId { get; set; }
 
+        [Required]
         [StringLength(200)]
         public string InstrNum { get; set; }
 
         public int GymId { get; set; }
 
+        [Required]
         [StringLength(200)]
         public string FullName { get; set; }
 
@@ -55,23 +57,23 @@ namespace iGYMMM1
         public string UName { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] UPass { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] UCode { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] UResetPass { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] U_GUID { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public byte[] OAuthLvl { get; set; }
 
         public int CreatedBy { get; set; }
@@ -84,7 +86,6 @@ namespace iGYMMM1
 
 
 
-
         [NotMapped]
         public List<InstrsAttendance> LInstrsAttendances { get; set; }
 
@@ -92,7 +93,5 @@ namespace iGYMMM1
         {
             LInstrsAttendances = new List<InstrsAttendance>();
         }
-
-
     }
 }

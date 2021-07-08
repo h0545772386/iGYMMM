@@ -12,7 +12,8 @@ namespace iGYMMM1
         static void Main(string[] args)
         {
             //CEED.ceed();
-            var l1 = AssigningAdapter.CreateTraining(20210815, 20210821, 100985);            
+            //var l1 = AssigningAdapter.CreateTrainingAllTeams(20210815, 20210821);
+            var l1 = AssigningAdapter.CreateTrainingAllTeams(20210815, 20210821, 100436);            
         }
 
     }

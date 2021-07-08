@@ -28,6 +28,7 @@ namespace iGYMMM1
         [StringLength(200)]
         public string CommuValue { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Status { get; set; }
 

@@ -8,8 +8,59 @@ namespace iGYMMM1
 {
     public class AssigningAdapter
     {
+        static List<AssigningLog> LAssigningLogs = new List<AssigningLog>();
+        static List<DiaryHeader> LDiaryHeaders2Save = new List<DiaryHeader>();
 
-        public static List<DiaryHeader> CreateTraining(int dateFrom, int dateTo, int TrnTmId)
+        public static List<DiaryHeader> CreateTrainingAllTeams(int dateFrom, int dateTo, int TrnTmId = -1)
+        {
+            List<TrainingTeam> LTrainingTeams = new List<TrainingTeam>();
+            List<DiaryHeader> LDiaryHeaders_new = new List<DiaryHeader>();  // new assignments
+            using (var db = new Model1())
+            {
+                if (TrnTmId == -1)
+                    LTrainingTeams = db.TrainingTeams.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active").ToList();
+                else
+                    LTrainingTeams = db.TrainingTeams.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnTmId == TrnTmId).ToList();
+            }
+            if (LTrainingTeams != null)
+            {
+                // Proccess starts
+                // Assign as requirements - no checks
+                // שיבות לקוחות לכל מאמן לפי דרישות החבליה ללא כל בדיקה
+                // לא בודקים שום תנאי
+                // מבצעים שיבוץ קבוצות לכל מאמן מועדף
+                foreach (var trnTeam in LTrainingTeams)
+                    LDiaryHeaders_new.AddRange(CreateTraining4Team(dateFrom, dateTo, trnTeam.TrnTmId));
+            }
+
+            // תחילת בדיקות
+            // 1. בודקים התנגשויות
+            // אם מאמן בשעה מסוימת יש לו יותר מקבוצה
+            CheckOverLaps(dateFrom, dateTo, ref LDiaryHeaders_new);
+
+
+
+
+            // check existing training with same properties at database
+            // paint those 
+
+            var overLaps = LDiaryHeaders_new.OrderBy(a => a.PlannedInstrId).ThenBy(b => b.ActualInstrId).ThenBy(c => c.TrnDate).ThenBy(d => d.TrnHour).ToList();
+
+
+
+
+
+
+
+
+
+
+
+
+            return LDiaryHeaders_new;
+        }
+
+        public static List<DiaryHeader> CreateTraining4Team(int dateFrom, int dateTo, int TrnTmId)
         {
             DateTime d1 = dateFrom.Int2Date();
             DateTime d2 = dateTo.Int2Date();
@@ -76,12 +127,14 @@ namespace iGYMMM1
             }
             #endregion SeletecFromDB
 
-
             // Proccess starts
             // Assign as requirements - no checks
+            // שיבות לקוחות לכל מאמן לפי דרישות החבליה ללא כל בדיקה
+            // לא בודקים שום תנאי
+            // מבצעים שיבוץ קבוצות לכל מאמן מועדף
             foreach (var trnTeam in LTrainingTeams)
             {
-                for (DateTime dd = d1; dd < d2; dd = dd.AddDays(1))   // period days
+                for (DateTime dd = d1; dd <= d2; dd = dd.AddDays(1))   // period days
                 {
                     foreach (var PkgReq in TrainingTeam.Package.LRequriments)
                     {
@@ -90,17 +143,6 @@ namespace iGYMMM1
                     }
                 }
             }
-
-            // check existing training with same properties at database
-            // paint those 
-
-
-
-
-
-
-
-
             return LDiaryHeaders_new;
         }
 
@@ -147,11 +189,11 @@ namespace iGYMMM1
                     ChangedAt = DateTime.Now.Date2Long()
 
                 };
-                //using (var db = new Model1())
-                //{
-                //    db.DiaryHeaders.Add(dh);
-                //    db.SaveChanges();
-                //}
+                using (var db = new Model1())
+                {
+                    db.DiaryHeaders.Add(dh);
+                    db.SaveChanges();
+                }
 
                 foreach (var clnt in TeamGrp.LClients)
                 {
@@ -180,11 +222,11 @@ namespace iGYMMM1
                         ChangedBy = AppGlobals.Instance.LoggedUser.UId,
                         ChangedAt = DateTime.Now.Date2Long()
                     };
-                    //using (var db = new Model1())
-                    //{
-                    //    db.DiaryItems.Add(di);
-                    //    db.SaveChanges();
-                    //}
+                    using (var db = new Model1())
+                    {
+                        db.DiaryItems.Add(di);
+                        db.SaveChanges();
+                    }
                     dh.LDiaryItems.Add(di);
                 }
                 LDH.Add(dh);
@@ -192,6 +234,39 @@ namespace iGYMMM1
             return LDH;
         }
 
+        private static void CheckOverLaps(int dateFrom, int dateTo, ref List<DiaryHeader> lDiaryHeaders_new)
+        {
+            DateTime d1 = dateFrom.Int2Date();
+            DateTime d2 = dateTo.Int2Date();
+            List<GymsTimeTable> LGymTT = new List<GymsTimeTable>();
+            using (var db = new Model1())
+            {
+                LGymTT = db.GymsTimeTables.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active").ToList();
+            }
+            for (DateTime dd = d1; dd <= d2; dd = dd.AddDays(1))   // period days
+            {
+                foreach (var GymTT in LGymTT)
+                {
+                    if (GymTT.DOW == dd.DayOfWeek.ToString())
+                    {
+                        for (int h = GymTT.OpenAt; h < GymTT.CloseAt; h++)
+                        {
+                            var g1 = lDiaryHeaders_new.Where(tt => tt.TrnDate == dd.Date2Int() && tt.TrnHour == h).GroupBy(tt => tt.ActualInstrId).ToList();
+                            if (lDiaryHeaders_new.Where(tt => tt.TrnDate == dd.Date2Int() && tt.TrnHour == h).GroupBy(tt => tt.ActualInstrId).ToList().Count > 1)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+        #region codeXXX 
+
+        /*
         private static AssigningLog AssignTrns4Day(DateTime dd, TrainingTeam trnTeam, TeamGroup teamGrp, PkgRequrmnt pkgReq, List<Instructor> lInstructors, List<DiaryHeader> lDiaryHeaders, ref List<DiaryHeader> lDiaryHeaders_new)
         {
 
@@ -273,8 +348,7 @@ namespace iGYMMM1
 
         }
 
-
-        #region codeXXX 
+        */
 
         //private void a1()
         //{

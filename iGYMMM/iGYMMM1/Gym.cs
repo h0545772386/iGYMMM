@@ -18,6 +18,7 @@ namespace iGYMMM1
         [StringLength(500)]
         public string GymDescr { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Status { get; set; }
 

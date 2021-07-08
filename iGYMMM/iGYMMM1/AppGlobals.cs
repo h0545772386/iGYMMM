@@ -17,11 +17,12 @@ namespace iGYMMM1
         public int GymId { get; set; }
         public User LoggedUser { get; set; }
 
-
         public AppGlobals()
         {
             GymId = 1000;
             LoggedUser = new User();
+
+
         }
 
 
