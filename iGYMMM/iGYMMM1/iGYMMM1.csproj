@@ -67,6 +67,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="Communication.cs" />
     <Compile Include="Description.cs" />
+    <Compile Include="DIARY.cs" />
     <Compile Include="DiaryClnt.cs" />
     <Compile Include="DiaryHeader.cs" />
     <Compile Include="DiaryInstr.cs" />

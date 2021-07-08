@@ -15,6 +15,14 @@ namespace iGYMMM1
 
         public int GymId { get; set; }
 
+        public int TrnTmId { get; set; }
+
+        public int TmGrpId { get; set; }
+
+        public int PkgId { get; set; }
+
+        public int PkgReqId { get; set; }
+
         public int TrnDate { get; set; }
 
         public int TrnHour { get; set; }

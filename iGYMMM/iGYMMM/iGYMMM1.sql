@@ -214,7 +214,8 @@ CREATE TABLE [dbo].[TrainingTeams](
 	[TrnTmDescr] [nvarchar](500) NOT NULL,
 	[InstrIdCount] [int] NOT NULL DEFAULT 0,   -- מספר מאמנים בקבוצה
 	[OnePayer] [bit] NOT NULL DEFAULT 0,
-	[TrnTmColor] [nvarchar](200) NULL,	
+	[TrnTmColor] [nvarchar](200) NULL,
+	[MustFavIntr4Grp] [bit] NOT NULL DEFAULT 0,   -- רק מאמן מועדף לאחת הקבוצות
     [Status] [nvarchar](100) NULL,
 	[CreatedBy] [int] NOT NULL,
 	[CreatedAt] [bigint] NOT NULL,
@@ -495,7 +496,11 @@ create  index i5 on [DiaryHeaders] ( [TrnDate] )
 CREATE TABLE [dbo].[DiaryItems](
     [DryItmId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY, 
 	[DryHdrId] [int] NOT NULL DEFAULT 0,
-	[GymId] [int] NOT NULL DEFAULT 0,    
+	[GymId] [int] NOT NULL DEFAULT 0, 
+	[TrnTmId] [int] NOT NULL DEFAULT 0,
+	[TmGrpId] [int] NOT NULL DEFAULT 0,
+	[PkgId] [int] NOT NULL DEFAULT 0,
+	[PkgReqId] [int] NOT NULL DEFAULT 0,
 	[TrnDate] [int] NOT NULL DEFAULT 0,     -- YYYYMMDD
 	[TrnHour] [int] NOT NULL DEFAULT 0,     -- 0- 23 hours	
 	[ClntId] [int] NOT NULL DEFAULT 0,
