@@ -60,7 +60,7 @@ namespace iGYMMM1
             return LDiaryHeaders_new;
         }
 
-        public static List<DiaryHeader> CreateTraining4Team(int dateFrom, int dateTo, int TrnTmId)
+        private static List<DiaryHeader> CreateTraining4Team(int dateFrom, int dateTo, int TrnTmId)
         {
             DateTime d1 = dateFrom.Int2Date();
             DateTime d2 = dateTo.Int2Date();
@@ -89,7 +89,13 @@ namespace iGYMMM1
                 foreach (var tmgrp in TrainingTeam.LTeamGroups)
                     tmgrp.LClients = LClients.Where(tt => tt.TrnTmId == TrnTmId && tt.TmGrpId == tmgrp.TmGrpId).ToList();
 
-                TrainingTeam.Package = db.Packages.FirstOrDefault(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnTmId == TrnTmId && tt.PkDateStart <= dateFrom && tt.PkDateEnd >= dateTo);
+                TrainingTeam.Package = db.Packages.FirstOrDefault(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnTmId == TrnTmId && 
+                                                                                                                                 (
+                                                                                                                                 dateFrom <= tt.PkDateStart && dateTo >= tt.PkDateStart ||
+                                                                                                                                 dateFrom <= tt.PkDateEnd && dateTo >= tt.PkDateEnd ||
+                                                                                                                                 dateFrom <= tt.PkDateStart && dateTo >= tt.PkDateEnd ||
+                                                                                                                                 dateFrom >= tt.PkDateStart && dateTo <= tt.PkDateEnd 
+                                                                                                                                 ));
                 if (TrainingTeam.Package == null)
                     return LDiaryHeaders_new;
 

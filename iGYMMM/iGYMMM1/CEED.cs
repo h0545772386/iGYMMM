@@ -12,10 +12,10 @@ namespace iGYMMM1
         {
             using (var db = new Model1())
             {
-                //ceed_Gym(db);
-                //ceed_GymsTimeTable(db);
-                //ceed_Instructor(db);
-                //ceed_InstrsAttendance(db);
+                ////ceed_Gym(db);
+                ////ceed_GymsTimeTable(db);
+                ////ceed_Instructor(db);
+                ////ceed_InstrsAttendance(db);
                 //ceed_TrainingTeam(db);
                 //ceed_TeamGroup(db);
                 //ceed_Clients(db);
@@ -269,7 +269,7 @@ namespace iGYMMM1
         {
             int i = 1;
             var TraningTeams = db.TrainingTeams.ToList();
-            foreach (var item in TraningTeams)
+            foreach (var trnTm in TraningTeams)
             {
                 DateTime d = DateTime.Now;
                 d = d.AddDays(i / 3);
@@ -278,7 +278,7 @@ namespace iGYMMM1
                     PkgName = d.Date2String("YYYYMMDDHHMM") + "_" + i.ToString(),
                     PkgType = (i % 11).ToString(),
                     GymId = 1000,
-                    TrnTmId = item.TrnTmId,
+                    TrnTmId = trnTm.TrnTmId,
                     PkDateStart = d.Date2Int(),
                     PkDateStart1 = d.Date2Int(),
                     PkDateEnd = d.AddDays(7 * 12).Date2Int(),
@@ -389,10 +389,27 @@ namespace iGYMMM1
                         pkg_requ.PkReqDayTime = d_t.EnumEng;
                     PkReqHour1 += 3;
                     if (PkReqHour1 >= 23)
-                        PkReqHour1 = 6;
+                        PkReqHour1 -= 23;
                     db.PkgRequrmnts.Add(pkg_requ);
                     db.SaveChanges();
                 }
+            }
+        }
+
+        
+        public static void clearTables()
+        {
+            using (var db = new Model1())
+            {
+                //ceed_Gym(db);
+                //ceed_GymsTimeTable(db);
+                //ceed_Instructor(db);
+                //ceed_InstrsAttendance(db);
+                //ceed_TrainingTeam(db);
+                //ceed_TeamGroup(db);
+                //ceed_Clients(db);
+                //ceed_Packages(db);
+                //ceed_PkgRequrmnt(db);
             }
         }
     }
