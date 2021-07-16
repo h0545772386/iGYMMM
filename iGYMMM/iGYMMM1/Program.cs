@@ -13,7 +13,7 @@ namespace iGYMMM1
         {
             //CEED.ceed();
             //var l1 = AssigningAdapter.CreateTrainingAllTeams(20210815, 20210821);
-            var l1 = AssigningAdapter.CreateTrainingAllTeams(20210815, 20210821, 100614);            
+            var l1 = AssigningAdapter.CreateTrainingAllTeams(20210815, 20210921);//, 100614);            
         }
 
     }

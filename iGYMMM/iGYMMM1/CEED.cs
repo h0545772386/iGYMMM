@@ -76,7 +76,7 @@ namespace iGYMMM1
                 Instructor instr = new Instructor()
                 {
                     InstrNum = i.ToString(),
-                    GymId = 0,
+                    GymId = 1000,
                     FullName = (" מאמן " + i.ToString()).Trim(),
                     AliaseName = (" מאמן " + i.ToString()).Trim(),
                     InstrIDN = "000000000",

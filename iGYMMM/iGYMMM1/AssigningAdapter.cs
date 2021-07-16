@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace iGYMMM1
 {
@@ -13,6 +14,7 @@ namespace iGYMMM1
 
         public static List<DiaryHeader> CreateTrainingAllTeams(int dateFrom, int dateTo, int TrnTmId = -1)
         {
+            LAssigningLogs.Clear();
             List<TrainingTeam> LTrainingTeams = new List<TrainingTeam>();
             List<DiaryHeader> LDiaryHeaders_new = new List<DiaryHeader>();  // new assignments
             using (var db = new Model1())
@@ -24,40 +26,49 @@ namespace iGYMMM1
             }
             if (LTrainingTeams != null)
             {
+                int porgess = 0;
+                int total = LTrainingTeams.Count;
                 // Proccess starts
                 // Assign as requirements - no checks
                 // שיבות לקוחות לכל מאמן לפי דרישות החבליה ללא כל בדיקה
                 // לא בודקים שום תנאי
                 // מבצעים שיבוץ קבוצות לכל מאמן מועדף
                 foreach (var trnTeam in LTrainingTeams)
+                {
                     LDiaryHeaders_new.AddRange(CreateTraining4Team(dateFrom, dateTo, trnTeam.TrnTmId));
+                    Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss fff")} {++porgess}/{total}");
+                }
             }
+            //StringBuilder sb = new StringBuilder();
+            //foreach(DiaryHeader dh in LDiaryHeaders_new)
+            //{
+            //    sb.AppendLine($"{dh.DryHdrId} PL-{dh.PlannedInstrId} AL-{dh.ActualInstrId} GP-{dh.TmGrpId} TR-{dh.TrnTmId}");
+            //}
+            //System.IO.File.WriteAllText($"{AppDomain.CurrentDomain.BaseDirectory}diary.txt",sb.ToString());
 
+            string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AssigningLog");
+            if (!Directory.Exists(logPath))
+            {
+                Directory.CreateDirectory(logPath);
+            }
+            StringBuilder logs = new StringBuilder();
+            int i = 0;
+            foreach (AssigningLog log in LAssigningLogs)
+            {
+                logs.AppendLine($"{++i} {log.TrnTmId} {log.TrnTmName} {log.TmGrpId}  {log.PkgId} {log.PkgReqId} {log.InstrId} {log.ActionText} {log.AssignTime}  {log.ErrorText}");
+            }
+            System.IO.File.WriteAllText(Path.Combine(logPath, $"{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.txt"), logs.ToString());
             // תחילת בדיקות
             // 1. בודקים התנגשויות
             // אם מאמן בשעה מסוימת יש לו יותר מקבוצה
-            CheckOverLaps(dateFrom, dateTo, ref LDiaryHeaders_new);
-
-
-
+            //    CheckOverLaps(dateFrom, dateTo, ref LDiaryHeaders_new);
 
             // check existing training with same properties at database
             // paint those 
 
             var overLaps = LDiaryHeaders_new.OrderBy(a => a.PlannedInstrId).ThenBy(b => b.ActualInstrId).ThenBy(c => c.TrnDate).ThenBy(d => d.TrnHour).ToList();
 
-
-
-
-
-
-
-
-
-
-
-
-            return LDiaryHeaders_new;
+            return overLaps;
         }
 
         private static List<DiaryHeader> CreateTraining4Team(int dateFrom, int dateTo, int TrnTmId)
@@ -69,7 +80,7 @@ namespace iGYMMM1
             List<Instructor> LInstructors = new List<Instructor>();
             List<DiaryHeader> LDiaryHeaders = new List<DiaryHeader>();
             List<AssigningLog> LAssigningLog = new List<AssigningLog>();  // error log
-            List<TrainingTeam> LTrainingTeams = new List<TrainingTeam>();
+                                                                          //   List<TrainingTeam> LTrainingTeams = new List<TrainingTeam>();
             List<DiaryHeader> LDiaryHeaders_new = new List<DiaryHeader>();  // new assignments
 
             #region SeletecFromDB
@@ -80,49 +91,52 @@ namespace iGYMMM1
                     return LDiaryHeaders_new;
 
                 TrainingTeam.LTeamGroups = db.TeamGroups.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnTmId == TrnTmId).ToList();
-                if (TrainingTeam.LTeamGroups == null)
+                if (TrainingTeam.LTeamGroups == null && TrainingTeam.LTeamGroups.Count > 0)
                     return LDiaryHeaders_new;
 
                 var LClients = db.Clients.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnTmId == TrnTmId).ToList();
-                if (LClients == null)
+                if (LClients == null && LClients.Count > 0)
                     return LDiaryHeaders_new;
                 foreach (var tmgrp in TrainingTeam.LTeamGroups)
                     tmgrp.LClients = LClients.Where(tt => tt.TrnTmId == TrnTmId && tt.TmGrpId == tmgrp.TmGrpId).ToList();
 
-                TrainingTeam.Package = db.Packages.FirstOrDefault(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnTmId == TrnTmId && 
-                                                                                                                                 (
-                                                                                                                                 dateFrom <= tt.PkDateStart && dateTo >= tt.PkDateStart ||
-                                                                                                                                 dateFrom <= tt.PkDateEnd && dateTo >= tt.PkDateEnd ||
-                                                                                                                                 dateFrom <= tt.PkDateStart && dateTo >= tt.PkDateEnd ||
-                                                                                                                                 dateFrom >= tt.PkDateStart && dateTo <= tt.PkDateEnd 
-                                                                                                                                 ));
+                TrainingTeam.Package = db.Packages.FirstOrDefault(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.IsPeriodFixed == true &&
+                                                                        tt.TrnTmId == TrnTmId && dateFrom <= tt.PkDateEnd && dateTo >= tt.PkDateStart);
+                //(
+                //dateFrom <= tt.PkDateStart && dateTo >= tt.PkDateStart ||
+                //dateFrom <= tt.PkDateEnd && dateTo >= tt.PkDateEnd ||
+                //dateFrom <= tt.PkDateStart && dateTo >= tt.PkDateEnd ||
+                //dateFrom >= tt.PkDateStart && dateTo <= tt.PkDateEnd 
+                //));
                 if (TrainingTeam.Package == null)
                     return LDiaryHeaders_new;
 
                 TrainingTeam.Package.LRequriments = db.PkgRequrmnts.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.PkgId == TrainingTeam.Package.PkgId).ToList();
-                if (TrainingTeam.Package.LRequriments == null)
+                if (TrainingTeam.Package.LRequriments == null && TrainingTeam.Package.LRequriments.Count > 0)
                     return LDiaryHeaders_new;
 
-                LTrainingTeams.Add(TrainingTeam);
+                //  LTrainingTeams.Add(TrainingTeam);
 
                 var LInstrAtendcs = db.InstrsAttendances.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.IAShiftDate >= dateFrom && tt.IAShiftDate <= dateTo).ToList();
-                if (LInstrAtendcs == null)
+                if (LInstrAtendcs == null && LInstrAtendcs.Count > 0)
                     return LDiaryHeaders_new;
                 LInstructors = db.Instructors.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active").ToList()
-                                             .Where(x => LInstrAtendcs.Any(y => y.InstrId == x.InstrId)).ToList().Distinct().ToList();
-                if (LInstructors == null)
+                            .Where(x => LInstrAtendcs.Any(y => y.InstrId == x.InstrId)).ToList();//.Distinct().ToList();
+                                                                                                 // LInstructors = LInstructors.Where(x=>LInstrAtendcs.Any(y=>y.InstrId==x.InstrId)).ToList();
+                if (LInstructors == null && LInstructors.Count > 0)
                     return LDiaryHeaders_new;
                 foreach (var item in LInstructors)
                 {
                     item.LInstrsAttendances = db.InstrsAttendances.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.IAShiftDate >= dateFrom && tt.IAShiftDate <= dateTo).ToList();
                 }
 
+
                 // get already assignments from database
-                LDiaryHeaders = db.DiaryHeaders.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnDate <= dateFrom && tt.TrnDate >= dateTo).ToList();
+                LDiaryHeaders = db.DiaryHeaders.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnDate >= dateFrom && tt.TrnDate <= dateTo).ToList();
                 if (LDiaryHeaders != null)
                 {
-                    var LDIs = db.DiaryItems.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnDate <= dateFrom && tt.TrnDate >= dateTo).ToList();
-                    if (LDIs != null)
+                    var LDIs = db.DiaryItems.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active" && tt.TrnDate >= dateFrom && tt.TrnDate <= dateTo).ToList();
+                    if (LDIs != null && LDIs.Count > 0)
                     {
                         foreach (var item in LDiaryHeaders)
                         {
@@ -138,140 +152,365 @@ namespace iGYMMM1
             // שיבות לקוחות לכל מאמן לפי דרישות החבליה ללא כל בדיקה
             // לא בודקים שום תנאי
             // מבצעים שיבוץ קבוצות לכל מאמן מועדף
-            foreach (var trnTeam in LTrainingTeams)
+            //foreach (var trnTeam in LTrainingTeams)
+            //{
+            DateTime pkgEndDate = TrainingTeam.Package.PkDateEnd.Int2Date();
+            DateTime pkgStartDate = TrainingTeam.Package.PkDateStart.Int2Date();
+            for (DateTime dd = d1; dd <= d2; dd = dd.AddDays(1))   // period days
             {
-                for (DateTime dd = d1; dd <= d2; dd = dd.AddDays(1))   // period days
+                if (dd < pkgStartDate)
+                    continue;
+                if (dd > pkgEndDate)
+                    break;
+                foreach (var PkgReq in TrainingTeam.Package.LRequriments)
                 {
-                    foreach (var PkgReq in TrainingTeam.Package.LRequriments)
-                    {
-                        if (dd.DayOfWeek.ToString().ToLower() == PkgReq.PkReqDOW.ToLower())
-                            LDiaryHeaders_new.AddRange(GoAssignTrns4Day(dd, trnTeam, PkgReq, LInstructors, LDiaryHeaders));
-                    }
+                    if (dd.DayOfWeek.ToString().ToLower() == PkgReq.PkReqDOW.ToLower())
+                        LDiaryHeaders_new.AddRange(GoAssignTrns4Day(dd, TrainingTeam, PkgReq, LInstructors, LDiaryHeaders));
                 }
             }
+            //}
             return LDiaryHeaders_new;
         }
 
         private static List<DiaryHeader> GoAssignTrns4Day(DateTime dd, TrainingTeam trnTeam, PkgRequrmnt pkgReq, List<Instructor> lInstructors, List<DiaryHeader> lDiaryHeaders)
         {
             List<DiaryHeader> LDH = new List<DiaryHeader>();
-            foreach (var TeamGrp in trnTeam.LTeamGroups)
+            using (var db = new Model1())
             {
-                DiaryHeader dh = new DiaryHeader()
+                using (var transation = db.Database.BeginTransaction())
                 {
-                    DryHdrId = 0,
-                    GymId = AppGlobals.Instance.GymId,
-                    TrnTmId = trnTeam.TrnTmId,
-                    TmGrpId = TeamGrp.TmGrpId,
-                    PkgId = pkgReq.PkgId,
-                    PkgReqId = pkgReq.PkgReqId,
-                    TrnDate = dd.Date2Int(),
-                    TrnHour = pkgReq.PkReqHour1,
-                    PkReqDOW = pkgReq.PkReqDOW,
-                    PkReqDayTime = pkgReq.PkReqDayTime,
-                    PkReqHour1 = pkgReq.PkReqHour1,
-                    PkReqHour2 = 0,
-                    PkReqTrnTime = pkgReq.PkReqTrnTime,
-                    ActualTrnDOW = pkgReq.PkReqDOW,
-                    ActualTrnDayTime = pkgReq.PkReqDayTime,
-                    ActualTrnHour1 = pkgReq.PkReqHour1,
-                    ActualTrnHour2 = 0,
-                    ActualTrnTrnTime = pkgReq.PkReqTrnTime,
-                    PlannedInstrId = TeamGrp.FavIntrId,
-                    ActualInstrId = TeamGrp.FavIntrId,
-                    PerHour1 = 0,
-                    PerHour2 = 0,
-                    PerWaitHour = 0,
-                    PerTrip1 = 0,
-                    PerTrip2 = 0,
-                    ChargeTot = 0,
-                    CreditTot = 0,
-                    ColorView = "",
-                    TrStatus = "Scheduled",
-                    Status = "Active",
-                    CreatedBy = AppGlobals.Instance.LoggedUser.UId,
-                    CreatedAt = DateTime.Now.Date2Long(),
-                    ChangedBy = AppGlobals.Instance.LoggedUser.UId,
-                    ChangedAt = DateTime.Now.Date2Long()
-
-                };
-                using (var db = new Model1())
-                {
-                    db.DiaryHeaders.Add(dh);
-                    db.SaveChanges();
-                }
-
-                foreach (var clnt in TeamGrp.LClients)
-                {
-                    DiaryItem di = new DiaryItem()
+                    foreach (var TeamGrp in trnTeam.LTeamGroups)
                     {
-                        DryItmId = 0,
-                        DryHdrId = dh.DryHdrId,
-                        GymId = AppGlobals.Instance.GymId,
-                        TrnTmId = trnTeam.TrnTmId,
-                        TmGrpId = TeamGrp.TmGrpId,
-                        PkgId = pkgReq.PkgId,
-                        PkgReqId = pkgReq.PkgReqId,
-                        TrnDate = dd.Date2Int(),
-                        TrnHour = pkgReq.PkReqHour1,
-                        ClntId = clnt.ClntId,
-                        PerHour1 = clnt.PerHour1,
-                        PerHour2 = clnt.PerHour2,
-                        PerTrip1 = clnt.PerTrip1,
-                        PerTrip2 = clnt.PerTrip2,
-                        ChargeTot = 0,
-                        CreditTot = 0,
-                        TrStatus = "Scheduled",
-                        Status = "Active",
-                        CreatedBy = AppGlobals.Instance.LoggedUser.UId,
-                        CreatedAt = DateTime.Now.Date2Long(),
-                        ChangedBy = AppGlobals.Instance.LoggedUser.UId,
-                        ChangedAt = DateTime.Now.Date2Long()
-                    };
-                    using (var db = new Model1())
-                    {
-                        db.DiaryItems.Add(di);
+                        // What has been assigned is no longer assignment.
+                        //In order to prevent the newly added group from not being assigned exactly to group.
+                        //New clients added to group should copy the same information from his goup members when added
+                        var diary = lDiaryHeaders.Where(c => c.TmGrpId == TeamGrp.TmGrpId && c.TrnDate == dd.Date2Int()).FirstOrDefault();
+                        if (diary != null)
+                        {
+                            LDH.Add(diary);
+                            continue;
+                        }
+
+                        DiaryHeader dh = new DiaryHeader()
+                        {
+                            DryHdrId = 0,
+                            GymId = AppGlobals.Instance.GymId,
+                            TrnTmId = trnTeam.TrnTmId,
+                            TmGrpId = TeamGrp.TmGrpId,
+                            PkgId = pkgReq.PkgId,
+                            PkgReqId = pkgReq.PkgReqId,
+                            TrnDate = dd.Date2Int(),
+                            TrnHour = pkgReq.PkReqHour1,
+                            PkReqDOW = pkgReq.PkReqDOW,
+                            PkReqDayTime = pkgReq.PkReqDayTime,
+                            PkReqHour1 = pkgReq.PkReqHour1,
+                            PkReqHour2 = 0,
+                            PkReqTrnTime = pkgReq.PkReqTrnTime,
+                            ActualTrnDOW = pkgReq.PkReqDOW,
+                            ActualTrnDayTime = pkgReq.PkReqDayTime,
+                            ActualTrnHour1 = pkgReq.PkReqHour1,
+                            ActualTrnHour2 = 0,
+                            ActualTrnTrnTime = pkgReq.PkReqTrnTime,
+                            PlannedInstrId = TeamGrp.FavIntrId,
+                            ActualInstrId = TeamGrp.FavIntrId,
+                            PerHour1 = 0,
+                            PerHour2 = 0,
+                            PerWaitHour = 0,
+                            PerTrip1 = 0,
+                            PerTrip2 = 0,
+                            ChargeTot = 0,
+                            CreditTot = 0,
+                            ColorView = "",
+                            TrStatus = "Scheduled",
+                            Status = "Active",
+                            CreatedBy = AppGlobals.Instance.LoggedUser.UId,
+                            CreatedAt = DateTime.Now.Date2Long(),
+                            ChangedBy = AppGlobals.Instance.LoggedUser.UId,
+                            ChangedAt = DateTime.Now.Date2Long()
+
+                        };
+                        //Assign instructor
+                        bool b = false;
+                        int date = dd.Date2Int();
+                        var instructor = lInstructors.Where(c => c.InstrId == TeamGrp.FavIntrId).FirstOrDefault();
+                        if (instructor != null)
+                        {
+                            b = instructor.LInstrsAttendances.Any(c => c.IAShiftDate == date && pkgReq.PkReqHour1 * 100 >= c.IAShiftStart % 10000 && pkgReq.PkReqHour1 * 100 <= c.IAShiftEnd % 10000);
+                        }
+                        //if favirote instructor is not available or there is a same record change instructor or train time
+                        if (!b || db.DiaryHeaders.Any(c => c.TrnDate == date && c.TrnHour == pkgReq.PkReqHour1 && c.ActualInstrId == TeamGrp.FavIntrId))
+                        {
+                            if (TeamGrp.MustFavIntrId)
+                            {
+                                if (instructor == null || !GetInstructor(pkgReq.PkReqDayTime, db, dd, pkgReq, TeamGrp, dh, new List<Instructor>() { instructor }))
+                                {
+                                    AssigningLog assigningLog = new AssigningLog()
+                                    {
+                                        Id = 0,
+                                        AssignTime = dd,
+                                        ErrorText = "No favorite coach access",
+                                        ActionText = "Assigning",
+                                        InstrId = TeamGrp.FavIntrId,
+                                        PkgId = pkgReq.PkgId,
+                                        PkgReqId = pkgReq.PkgReqId,
+                                        TmGrpId = TeamGrp.TmGrpId,
+                                        TrnTmId = TeamGrp.TrnTmId,
+                                        TrnTmName = trnTeam.TrnTmName
+                                    };
+                                    LAssigningLogs.Add(assigningLog);
+                                    continue;
+                                }
+                                #region
+                                //int start = 6;
+                                //switch (pkgReq.PkReqDayTime)
+                                //{
+                                //    case "Morning":
+                                //        start = 6;
+                                //            break;
+                                //    case "Afternoon":
+                                //        start = 12;
+                                //        break;
+                                //    case "Eveinig":
+                                //        start = 18;
+                                //        break;
+                                //}
+                                //int x = 0;
+                                //int y = 0;
+                                //bool bExist = true;
+                                //for (int d = 0; bExist; d++)
+                                //{
+                                //    //Get open time from GymsTimeTables  if it is null(may be not a working day) ,move to next day
+                                //    var working = db.GymsTimeTables.Where(c => c.Status == "Active" && c.DOW == dd.AddDays(d).DayOfWeek.ToString()).FirstOrDefault();
+                                //    if (working == null)
+                                //        continue;
+                                //    //loop 24 hours for one open day during open hours whether there is a period to get this instructor
+                                //    //selected PkReqDayTime first
+                                //    for (int i = start; x * y < start; i++)
+                                //    {
+                                //        x = i / 23;
+                                //        y = i % 23;
+                                //        if (y < working.OpenAt || y > working.CloseAt)
+                                //            continue;
+                                //        bExist = db.DiaryHeaders.Any(c => c.TrnDate == dd.AddDays(d).Date2Int() && c.TrnHour == pkgReq.PkReqHour1 && c.ActualInstrId == TeamGrp.FavIntrId);
+                                //        if (!bExist)
+                                //        {
+                                //            if (i > 5 && i < 12)
+                                //            {
+                                //                dh.ActualTrnDayTime = "Morning";
+                                //            }
+                                //            else if (i > 11 && i < 18)
+                                //            {
+                                //                dh.ActualTrnDayTime = "Afternoon";
+                                //            }
+                                //            else if (i > 17 && i < 24)
+                                //            {
+                                //                dh.ActualTrnDayTime = "Eveinig";
+                                //            }
+                                //            dh.ActualTrnDOW = dd.AddDays(d).DayOfWeek.ToString();
+                                //            dh.TrnHour = i;
+                                //            dh.TrnDate = dd.AddDays(d).Date2Int();
+                                //            break;
+                                //        }
+                                //    }
+                                //    //if move to check next day will start from eariest morning time
+                                //    start = 6;
+                                //}
+                                #endregion
+                            }
+                            else
+                            {
+                                var intrs = db.DiaryHeaders.Where(c => c.TrnDate == date && c.TrnHour == pkgReq.PkReqHour1);
+                                var freeIntrs = lInstructors.Where(x => !intrs.Any(y => y.ActualInstrId == x.InstrId)).ToList().Where(x => x.LInstrsAttendances.Any(c => c.IAShiftDate == date && pkgReq.PkReqHour1 * 100 >= c.IAShiftStart % 10000 && pkgReq.PkReqHour1 * 100 <= c.IAShiftEnd % 10000)).ToList();
+
+                                if (freeIntrs == null || freeIntrs.Count < 1)
+                                {
+                                    if (lInstructors == null || !GetInstructor(pkgReq.PkReqDayTime, db, dd, pkgReq, TeamGrp, dh, lInstructors))
+                                    {
+                                        AssigningLog assigningLog = new AssigningLog()
+                                        {
+                                            Id = 0,
+                                            AssignTime = dd,
+                                            ErrorText = "No free coach access",
+                                            ActionText = "Assigning",
+                                            InstrId = TeamGrp.FavIntrId,
+                                            PkgId = pkgReq.PkgId,
+                                            PkgReqId = pkgReq.PkgReqId,
+                                            TmGrpId = TeamGrp.TmGrpId,
+                                            TrnTmId = TeamGrp.TrnTmId,
+                                            TrnTmName = trnTeam.TrnTmName
+                                        };
+                                        LAssigningLogs.Add(assigningLog);
+                                        continue;
+                                    }
+                                }
+                                else
+                                {
+                                    Instructor instructor1 = freeIntrs[new Random(DateTime.Now.Millisecond).Next(0, freeIntrs.Count - 1)];
+                                    dh.ActualInstrId = instructor1.InstrId;
+                                }
+                            }
+                        }
+                        db.DiaryHeaders.Add(dh);
                         db.SaveChanges();
+                        foreach (var clnt in TeamGrp.LClients)
+                        {
+                            DiaryItem di = new DiaryItem()
+                            {
+                                DryItmId = 0,
+                                DryHdrId = dh.DryHdrId,
+                                GymId = AppGlobals.Instance.GymId,
+                                TrnTmId = trnTeam.TrnTmId,
+                                TmGrpId = TeamGrp.TmGrpId,
+                                PkgId = pkgReq.PkgId,
+                                PkgReqId = pkgReq.PkgReqId,
+                                TrnDate = dd.Date2Int(),
+                                TrnHour = pkgReq.PkReqHour1,
+                                ClntId = clnt.ClntId,
+                                PerHour1 = clnt.PerHour1,
+                                PerHour2 = clnt.PerHour2,
+                                PerTrip1 = clnt.PerTrip1,
+                                PerTrip2 = clnt.PerTrip2,
+                                ChargeTot = 0,
+                                CreditTot = 0,
+                                TrStatus = "Scheduled",
+                                Status = "Active",
+                                CreatedBy = AppGlobals.Instance.LoggedUser.UId,
+                                CreatedAt = DateTime.Now.Date2Long(),
+                                ChangedBy = AppGlobals.Instance.LoggedUser.UId,
+                                ChangedAt = DateTime.Now.Date2Long()
+                            };
+
+                            db.DiaryItems.Add(di);
+                            db.SaveChanges();
+                            dh.LDiaryItems.Add(di);
+                        }
+                        LDH.Add(dh);
+                        lDiaryHeaders.Add(dh);
                     }
-                    dh.LDiaryItems.Add(di);
+                    transation.Commit();
                 }
-                LDH.Add(dh);
             }
             return LDH;
         }
 
-        private static void CheckOverLaps(int dateFrom, int dateTo, ref List<DiaryHeader> lDiaryHeaders_new)
+        /// <summary>
+        /// get instructors 
+        /// check differet instructor or differet hour
+        /// </summary>
+        /// <param name="dayTime"></param>
+        /// <param name="db"></param>
+        /// <param name="dd"></param>
+        /// <param name="pkgReq"></param>
+        /// <param name="TeamGrp"></param>
+        /// <param name="dh"></param>
+        /// <param name="instructors"></param>
+        /// <returns></returns>
+        private static bool GetInstructor(string dayTime, Model1 db, DateTime dd, PkgRequrmnt pkgReq, TeamGroup TeamGrp, DiaryHeader dh, List<Instructor> instructors)
         {
-            DateTime d1 = dateFrom.Int2Date();
-            DateTime d2 = dateTo.Int2Date();
-            List<GymsTimeTable> LGymTT = new List<GymsTimeTable>();
-            using (var db = new Model1())
+            int start = 6;
+            switch (dayTime)
             {
-                LGymTT = db.GymsTimeTables.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active").ToList();
+                case "Morning":
+                    start = 6;
+                    break;
+                case "Afternoon":
+                    start = 12;
+                    break;
+                case "Eveinig":
+                    start = 18;
+                    break;
             }
-            for (DateTime dd = d1; dd <= d2; dd = dd.AddDays(1))   // period days
+            int x = 0;
+            int y = 0;
+            bool bExist = true;
+            // a week is a cycle
+            for (int d = 0; bExist && d < 7; d++)
             {
-                foreach (var GymTT in LGymTT)
+                string weekDay = dd.AddDays(d).DayOfWeek.ToString();
+                //Get open time from GymsTimeTables  if it is null(may be not a working day) ,move to next day
+                var working = db.GymsTimeTables.Where(c => c.Status == "Active" && c.DOW == weekDay).FirstOrDefault();
+                if (working == null)
+                    continue;
+                //loop 24 hours for one open day during open hours whether there is a period to get this instructor
+                //selected PkReqDayTime first
+                for (int i = start; x * y < start; i++)
                 {
-                    if (GymTT.DOW == dd.DayOfWeek.ToString())
+                    x = i / 23;
+                    y = i % 23;
+                    if (y < working.OpenAt || y > working.CloseAt)
+                        continue;
+                    int date = dd.AddDays(d).Date2Int();
+                    foreach (Instructor ins in instructors)
                     {
-                        for (int h = GymTT.OpenAt; h < GymTT.CloseAt; h++)
+                        //make sure the time is a instructors working time
+                        var insAtt = ins.LInstrsAttendances.Where(c => c.IAShiftDate == date && y * 100 >= c.IAShiftStart % 10000 && y * 100 <= c.IAShiftEnd % 10000).FirstOrDefault();
+                        if (insAtt == null)
+                            continue;
+                        //make sure there is no same time DiaryHeaders record
+                        bExist = db.DiaryHeaders.Any(c => c.TrnDate == date && c.TrnHour == y && c.ActualInstrId == ins.InstrId);
+                        if (!bExist)
                         {
-                            var g1 = lDiaryHeaders_new.Where(tt => tt.TrnDate == dd.Date2Int() && tt.TrnHour == h).GroupBy(tt => tt.ActualInstrId).ToList();
-                            if (lDiaryHeaders_new.Where(tt => tt.TrnDate == dd.Date2Int() && tt.TrnHour == h).GroupBy(tt => tt.ActualInstrId).ToList().Count > 1)
+                            if (y > 5 && y < 12)
                             {
-
+                                dh.ActualTrnDayTime = "Morning";
                             }
+                            else if (y > 11 && y < 18)
+                            {
+                                dh.ActualTrnDayTime = "Afternoon";
+                            }
+                            else if (y > 17 && y < 24)
+                            {
+                                dh.ActualTrnDayTime = "Eveinig";
+                            }
+                            dh.ActualTrnDOW = weekDay;//dd.AddDays(d).DayOfWeek.ToString();
+                            dh.TrnHour = y;
+                            dh.TrnDate = date;//dd.AddDays(d).Date2Int();
+                            dh.ActualInstrId = ins.InstrId;
+                            return !bExist;
                         }
                     }
                 }
+                //if move to check next day will start from eariest morning time
+                start = 6;
+                y = 0;
+                x = 0;
             }
-
+            return !bExist;
         }
 
 
-        #region codeXXX 
 
+
+
+        #region codeXXX 
+        //private static void CheckOverLaps(int dateFrom, int dateTo, ref List<DiaryHeader> lDiaryHeaders_new)
+        //{
+        //    DateTime d1 = dateFrom.Int2Date();
+        //    DateTime d2 = dateTo.Int2Date();
+        //    List<GymsTimeTable> LGymTT = new List<GymsTimeTable>();
+        //    using (var db = new Model1())
+        //    {
+        //        LGymTT = db.GymsTimeTables.Where(tt => tt.GymId == AppGlobals.Instance.GymId && tt.Status == "Active").ToList();
+        //    }
+        //    for (DateTime dd = d1; dd <= d2; dd = dd.AddDays(1))   // period days
+        //    {
+        //        foreach (var GymTT in LGymTT)
+        //        {
+        //            if (GymTT.DOW == dd.DayOfWeek.ToString())
+        //            {
+        //                for (int h = GymTT.OpenAt; h < GymTT.CloseAt; h++)
+        //                {
+        //                    var g1 = lDiaryHeaders_new.Where(tt => tt.TrnDate == dd.Date2Int() && tt.TrnHour == h).GroupBy(tt => tt.ActualInstrId).ToList();
+        //                    if (lDiaryHeaders_new.Where(tt => tt.TrnDate == dd.Date2Int() && tt.TrnHour == h).GroupBy(tt => tt.ActualInstrId).ToList().Count > 1)
+        //                    {
+
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //}
         /*
         private static AssigningLog AssignTrns4Day(DateTime dd, TrainingTeam trnTeam, TeamGroup teamGrp, PkgRequrmnt pkgReq, List<Instructor> lInstructors, List<DiaryHeader> lDiaryHeaders, ref List<DiaryHeader> lDiaryHeaders_new)
         {
