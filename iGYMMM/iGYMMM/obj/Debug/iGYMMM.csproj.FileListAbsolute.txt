@@ -81,7 +81,6 @@ D:\DEV\iGYMMM\iGYMMM\iGYMMM\obj\Debug\iGYMMM.csproj.CoreCompileInputs.cache
 D:\DEV\iGYMMM\iGYMMM\iGYMMM\obj\Debug\iGYMMM.csproj.CopyComplete
 D:\DEV\iGYMMM\iGYMMM\iGYMMM\obj\Debug\iGYMMM.exe
 D:\DEV\iGYMMM\iGYMMM\iGYMMM\obj\Debug\iGYMMM.pdb
-D:\DEV\iGYMMM\iGYMMM\iGYMMM\obj\Debug\iGYMMM.csproj.AssemblyReference.cache
 C:\Users\Hamzi AbuKhalla\Downloads\iGYMMM\iGYMMM\iGYMMM\bin\Debug\iGYMMM.exe.config
 C:\Users\Hamzi AbuKhalla\Downloads\iGYMMM\iGYMMM\iGYMMM\bin\Debug\iGYMMM.exe
 C:\Users\Hamzi AbuKhalla\Downloads\iGYMMM\iGYMMM\iGYMMM\bin\Debug\iGYMMM.pdb
